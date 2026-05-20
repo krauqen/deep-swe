@@ -24,7 +24,7 @@ Each `tasks/<task-id>/` directory follows the [Harbor](https://www.harborframewo
 
 ```bash
 git clone https://github.com/datacurve-ai/deep-swe
-uv tool install git+https://github.com/datacurve-ai/pier
+uv tool install datacurve-pier
 
 # Claude Opus 4.7 via Claude Code
 export ANTHROPIC_API_KEY=...
