@@ -1,8 +1,6 @@
-# DeepSWE
+# [DeepSWE](https://deep-swe.vercel.app)
 
 A benchmark of 113 long-horizon software engineering tasks, drawn from 91 active open-source repositories across five languages (TypeScript, Go, Python, JavaScript, Rust). Each task ships a natural-language prompt, an isolated execution environment, and a program-based verifier that scores observable behavior and admits a range of valid solutions.
-
-The published article (motivation, methodology, results, limitations) lives on the site. This README is for people who want to **use the benchmark**.
 
 ## Task format
 
@@ -16,7 +14,8 @@ tests/            Verifier: test.sh (entry point) + test.patch (test additions, 
 solution/         Reference solution (held out from the agent; for human and AI reviewers)
 ```
 
-The verifier exercises the behavior the prompt describes, not a single regression test. It accepts any solution whose observable behavior is correct, regardless of internal symbol names or structure. The reference patch in `solution/` is never used at grading time; it exists so reviewers can spot-check correctness offline.
+The verifier exercises the behavior the prompt describes. It accepts any solution whose observable behavior is correct, regardless of internal symbol names or structure.
+The reference patch in `solution/` is never used at grading time; it exists so reviewers can spot-check correctness offline.
 
 ## Quickstart
 
@@ -34,8 +33,6 @@ pier run -p deep-swe/tasks --agent mini-swe-agent --model anthropic/claude-opus-
 export OPENAI_API_KEY=...
 pier run -p deep-swe/tasks --agent mini-swe-agent --model openai/gpt-5.5
 ```
-
-The standard metric is **task pass-any**: did at least one rollout of your agent pass this task?
 
 ## What is Pier
 
