@@ -1,6 +1,6 @@
 # [DeepSWE](https://deep-swe.vercel.app)
 
-A benchmark of 113 long-horizon software engineering tasks, drawn from 91 active open-source repositories across five languages (TypeScript, Go, Python, JavaScript, Rust). Each task ships a natural-language prompt, an isolated execution environment, and a program-based verifier that scores observable behavior and admits a range of valid solutions.
+DeepSWE is a benchmark for measuring frontier coding agents on original, long-horizon software engineering tasks drawn from active open-source repositories. The benchmark includes 113 tasks across TypeScript, Go, Python, JavaScript, and Rust, with isolated environments and program-based verifiers.
 
 ## Task format
 
