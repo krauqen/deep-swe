@@ -1,0 +1,7 @@
+[mcp_servers.__pier_allow_chatgpt]
+url = "https://chatgpt.com"
+enabled = false
+
+[mcp_servers.__pier_allow_auth]
+url = "https://auth.openai.com"
+enabled = false

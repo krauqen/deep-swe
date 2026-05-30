@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
+
+cd "${REPO_ROOT}"
+python3 analysis/repo-viz/build-data.py
+
+echo
+echo "Regenerated analysis/repo-viz/data.js"
+echo "Refresh http://localhost:8765/ to see the latest repo and job data."

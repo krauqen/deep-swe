@@ -57,3 +57,18 @@ Single task:
 ```bash
 pier run -p deep-swe/tasks/<task-id> --agent mini-swe-agent
 ```
+
+## Local human workflow
+
+For editing a task directly with VS Code/Codex and then running the verifier:
+
+```bash
+scripts/deepswe-task setup prometheus-typed-label-sorting
+scripts/deepswe-task code prometheus-typed-label-sorting
+scripts/deepswe-task codex prometheus-typed-label-sorting
+scripts/deepswe-task verify prometheus-typed-label-sorting
+```
+
+This stores editable source at `workspaces/<task-id>/app` and runs verification
+inside the task Docker image against a disposable copy. See
+`docs/local-task-workflow.md` for the SSH and repeatable per-task workflow.

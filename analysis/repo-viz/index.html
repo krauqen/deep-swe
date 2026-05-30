@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DeepSWE Repo Observatory</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <aside class="sidebar" aria-label="Sections">
+        <div class="brand">
+          <span class="mark" aria-hidden="true"></span>
+          <div>
+            <h1>DeepSWE Observatory</h1>
+            <p>Repo structure, task corpus, environments, and local run traces.</p>
+          </div>
+        </div>
+        <nav class="nav">
+          <a href="#overview">Overview</a>
+          <a href="#docker">Dockerfiles</a>
+          <a href="#tasks">Tasks</a>
+          <a href="#projects">Projects</a>
+          <a href="#jobs">Jobs</a>
+          <a href="#live">Live</a>
+        </nav>
+        <div class="sidebar-note">
+          <strong>Data source</strong>
+          <span id="generatedAt"></span>
+        </div>
+      </aside>
+
+      <section class="content">
+        <section id="overview" class="section">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Repository map</p>
+              <h2>What this repo is made of</h2>
+            </div>
+            <div class="search-wrap">
+              <label for="globalSearch">Search tasks, repos, Dockerfiles</label>
+              <input id="globalSearch" type="search" placeholder="Try prometheus, pip, rust..." />
+            </div>
+          </div>
+          <div class="metric-grid" id="metrics"></div>
+          <div class="two-up">
+            <div class="panel">
+              <div class="panel-title">
+                <h3>Task Languages</h3>
+              </div>
+              <div id="languageBars" class="bars"></div>
+            </div>
+            <div class="panel">
+              <div class="panel-title">
+                <h3>File Inventory</h3>
+              </div>
+              <div id="fileBars" class="bars compact"></div>
+            </div>
+          </div>
+          <div class="note-grid" id="notes"></div>
+        </section>
+
+        <section id="docker" class="section">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Environment model</p>
+              <h2>Dockerfiles are mostly small templates</h2>
+            </div>
+            <div class="filter-row" role="group" aria-label="Dockerfile filters">
+              <button class="chip active" data-bucket="all" type="button">All</button>
+              <button class="chip" data-bucket="<=10" type="button">&lt;=10 lines</button>
+              <button class="chip" data-bucket="11-20" type="button">11-20</button>
+              <button class="chip" data-bucket=">20" type="button">&gt;20</button>
+            </div>
+          </div>
+          <div class="docker-story">
+            <div class="panel">
+              <div class="panel-title">
+                <h3>Line Count Buckets</h3>
+              </div>
+              <div id="dockerBuckets" class="bucket-chart"></div>
+            </div>
+            <div class="panel">
+              <div class="panel-title">
+                <h3>Dependency Warm-Up</h3>
+              </div>
+              <div id="installBars" class="bars compact"></div>
+            </div>
+          </div>
+          <div class="callout" id="dockerCallout"></div>
+          <div class="docker-browser">
+            <div class="table-panel">
+              <div class="panel-title">
+                <h3>Dockerfile Browser</h3>
+                <span id="dockerCount"></span>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Task</th>
+                      <th>Lang</th>
+                      <th>Lines</th>
+                      <th>Install shape</th>
+                    </tr>
+                  </thead>
+                  <tbody id="dockerRows"></tbody>
+                </table>
+              </div>
+            </div>
+            <div class="code-panel">
+              <div class="panel-title">
+                <div>
+                  <h3 id="selectedDockerTitle">Dockerfile</h3>
+                  <p id="selectedDockerMeta"></p>
+                </div>
+              </div>
+              <pre><code id="dockerCode"></code></pre>
+            </div>
+          </div>
+        </section>
+
+        <section id="tasks" class="section">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Task corpus</p>
+              <h2>113 agent challenges across five languages</h2>
+            </div>
+            <select id="languageFilter" aria-label="Filter by language">
+              <option value="all">All languages</option>
+            </select>
+          </div>
+          <div id="taskGrid" class="task-grid"></div>
+        </section>
+
+        <section id="projects" class="section">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Upstream projects</p>
+              <h2>Where the tasks come from</h2>
+            </div>
+            <select id="projectSort" aria-label="Sort projects">
+              <option value="tasks">Dataset tasks</option>
+              <option value="stars">Stars</option>
+              <option value="issues">Open issues</option>
+            </select>
+          </div>
+          <div class="project-layout">
+            <div id="projectList" class="project-list"></div>
+            <div class="panel project-detail">
+              <div class="panel-title">
+                <h3 id="projectTitle">Project detail</h3>
+              </div>
+              <div id="projectDetail"></div>
+            </div>
+          </div>
+        </section>
+
+        <section id="jobs" class="section">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Local Pier output</p>
+              <h2>Observed run metadata</h2>
+            </div>
+          </div>
+          <div id="jobPanels" class="job-panels"></div>
+        </section>
+
+        <section id="live" class="section">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Trajectory stream</p>
+              <h2>Watch Pier trials like a chat log</h2>
+            </div>
+            <div class="live-actions">
+              <label class="toggle">
+                <input id="liveAutorefresh" type="checkbox" checked />
+                <span>Live</span>
+              </label>
+              <button id="liveRefresh" class="chip" type="button">Refresh</button>
+            </div>
+          </div>
+          <div class="live-layout">
+            <div class="panel">
+              <div class="panel-title">
+                <h3>Source</h3>
+                <span id="liveStatus">Checking...</span>
+              </div>
+              <div class="live-controls">
+                <label for="liveJobSelect">Job</label>
+                <select id="liveJobSelect"></select>
+                <label for="liveTrialSelect">Trial</label>
+                <select id="liveTrialSelect"></select>
+              </div>
+              <div id="liveTrialMeta" class="live-meta"></div>
+            </div>
+            <div class="panel live-panel">
+              <div class="panel-title">
+                <div>
+                  <h3 id="liveTitle">Trajectory</h3>
+                  <p id="liveSource"></p>
+                </div>
+                <span id="liveCount"></span>
+              </div>
+              <div id="liveEvents" class="live-events"></div>
+            </div>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <script>
+      document.write('<script src="./data.js?v=' + Date.now() + '"><\/script>');
+    </script>
+    <script src="./app.js"></script>
+  </body>
+</html>

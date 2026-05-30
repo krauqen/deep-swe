@@ -1,0 +1,1671 @@
+{
+  "generated_at": "2026-05-30T15:27:52+00:00",
+  "task_count": 113,
+  "project_count": 91,
+  "source": "DeepSWE task.toml files plus GitHub REST Search API",
+  "records": [
+    {
+      "repo": "abs-lang/abs",
+      "url": "https://github.com/abs-lang/abs",
+      "summary": "Home of the ABS programming language: the joy of shell scripting.",
+      "github_language": "Go",
+      "dataset_languages": {
+        "go": 2
+      },
+      "task_count": 2,
+      "stars": 610,
+      "forks": 39,
+      "open_issues": 57,
+      "license": "MIT",
+      "pushed_at": "2025-04-27T17:25:30Z",
+      "task_titles": [
+        "Harden module loading, cache introspection, and script flags",
+        "Add stepped slices for arrays and strings"
+      ]
+    },
+    {
+      "repo": "aio-libs/aiomonitor",
+      "url": "https://github.com/aio-libs/aiomonitor",
+      "summary": "aiomonitor is module that adds monitor and python REPL capabilities for asyncio application",
+      "github_language": "Python",
+      "dataset_languages": {
+        "python": 1
+      },
+      "task_count": 1,
+      "stars": 773,
+      "forks": 45,
+      "open_issues": 31,
+      "license": "Apache-2.0",
+      "pushed_at": "2026-05-02T00:30:29Z",
+      "task_titles": [
+        "Add task snapshots, inspection, and diffing to aiomonitor"
+      ]
+    },
+    {
+      "repo": "alecthomas/participle",
+      "url": "https://github.com/alecthomas/participle",
+      "summary": "A parser library for Go",
+      "github_language": "Go",
+      "dataset_languages": {
+        "go": 1
+      },
+      "task_count": 1,
+      "stars": 3867,
+      "forks": 205,
+      "open_issues": 33,
+      "license": "MIT",
+      "pushed_at": "2026-05-30T14:11:01Z",
+      "task_titles": [
+        "Add build-time grammar conflict analysis to participle"
+      ]
+    },
+    {
+      "repo": "arktypeio/arktype",
+      "url": "https://github.com/arktypeio/arktype",
+      "summary": "TypeScript's 1:1 validator, optimized from editor to runtime",
+      "github_language": "TypeScript",
+      "dataset_languages": {
+        "typescript": 1
+      },
+      "task_count": 1,
+      "stars": 7770,
+      "forks": 145,
+      "open_issues": 259,
+      "license": "MIT",
+      "pushed_at": "2026-03-04T20:19:48Z",
+      "task_titles": [
+        "Add JSON Schema refs and dependency keywords"
+      ]
+    },
+    {
+      "repo": "baryhuang/claude-code-by-agents",
+      "url": "https://github.com/baryhuang/claude-code-by-agents",
+      "summary": "Desktop app and API created in public for multi-agent Claude Code orchestration - coordinate local and remote agents through @mentions. ",
+      "github_language": "Swift",
+      "dataset_languages": {
+        "typescript": 1
+      },
+      "task_count": 1,
+      "stars": 875,
+      "forks": 75,
+      "open_issues": 14,
+      "license": "MIT",
+      "pushed_at": "2026-05-22T07:29:16Z",
+      "task_titles": [
+        "Implement recursive agent delegation through delegate_task tool calls"
+      ]
+    },
+    {
+      "repo": "beevik/etree",
+      "url": "https://github.com/beevik/etree",
+      "summary": "Parse, query and modify XML easily in go",
+      "github_language": "Go",
+      "dataset_languages": {
+        "go": 1
+      },
+      "task_count": 1,
+      "stars": 1658,
+      "forks": 182,
+      "open_issues": 0,
+      "license": "BSD-2-Clause",
+      "pushed_at": "2025-08-22T22:58:43Z",
+      "task_titles": [
+        "Add XML diff, patch, and merge operations to etree"
+      ]
+    },
+    {
+      "repo": "boa-dev/boa",
+      "url": "https://github.com/boa-dev/boa",
+      "summary": "Boa is an embeddable Javascript engine written in Rust.",
+      "github_language": "Rust",
+      "dataset_languages": {
+        "rust": 1
+      },
+      "task_count": 1,
+      "stars": 7277,
+      "forks": 630,
+      "open_issues": 254,
+      "license": "MIT",
+      "pushed_at": "2026-05-30T08:07:57Z",
+      "task_titles": [
+        "Add hierarchical evaluation cancellation to Boa"
+      ]
+    },
+    {
+      "repo": "bombshell-dev/clack",
+      "url": "https://github.com/bombshell-dev/clack",
+      "summary": "Effortlessly build beautiful command-line apps",
+      "github_language": "TypeScript",
+      "dataset_languages": {
+        "typescript": 1
+      },
+      "task_count": 1,
+      "stars": 7814,
+      "forks": 199,
+      "open_issues": 79,
+      "license": "NOASSERTION",
+      "pushed_at": "2026-05-29T16:34:32Z",
+      "task_titles": [
+        "Add async autocomplete options and fetch lifecycle handling"
+      ]
+    },
+    {
+      "repo": "boyter/scc",
+      "url": "https://github.com/boyter/scc",
+      "summary": "Sloc, Cloc and Code: scc is a very fast accurate code counter with complexity calculations and COCOMO estimates written in pure Go",
+      "github_language": "Go",
+      "dataset_languages": {
+        "go": 1
+      },
+      "task_count": 1,
+      "stars": 8428,
+      "forks": 319,
+      "open_issues": 52,
+      "license": "MIT",
+      "pushed_at": "2026-05-28T23:19:22Z",
+      "task_titles": [
+        "Add bounded-memory spilling to SCC aggregation"
+      ]
+    },
+    {
+      "repo": "c4spar/cliffy",
+      "url": "https://github.com/c4spar/cliffy",
+      "summary": "A TypeScript-first, runtime-agnostic command-line toolkit for building complex   CLIs — featuring a command framework, argument parser, interactive prompts,   tables, ANSI utilities, and more.",
+      "github_language": "TypeScript",
+      "dataset_languages": {
+        "typescript": 1
+      },
+      "task_count": 1,
+      "stars": 1155,
+      "forks": 77,
+      "open_issues": 48,
+      "license": "MIT",
+      "pushed_at": "2026-05-30T14:27:32Z",
+      "task_titles": [
+        "Add config file parsing to Cliffy commands"
+      ]
+    },
+    {
+      "repo": "capricorn86/happy-dom",
+      "url": "https://github.com/capricorn86/happy-dom",
+      "summary": "A JavaScript implementation of a web browser without its graphical user interface",
+      "github_language": "TypeScript",
+      "dataset_languages": {
+        "typescript": 2
+      },
+      "task_count": 2,
+      "stars": 4499,
+      "forks": 297,
+      "open_issues": 315,
+      "license": "MIT",
+      "pushed_at": "2026-05-22T21:35:13Z",
+      "task_titles": [
+        "Abort pending body reads on shutdown",
+        "Implement a deterministic IntersectionObserver in Happy DOM"
+      ]
+    },
+    {
+      "repo": "carvel-dev/ytt",
+      "url": "https://github.com/carvel-dev/ytt",
+      "summary": "YAML templating tool that works on YAML structure instead of text",
+      "github_language": "Go",
+      "dataset_languages": {
+        "go": 1
+      },
+      "task_count": 1,
+      "stars": 1851,
+      "forks": 156,
+      "open_issues": 157,
+      "license": "Apache-2.0",
+      "pushed_at": "2026-05-27T19:31:18Z",
+      "task_titles": [
+        "Add JSONPath query APIs to orderedmap and Starlark modules"
+      ]
+    },
+    {
+      "repo": "celery/kombu",
+      "url": "https://github.com/celery/kombu",
+      "summary": "Messaging library for Python.",
+      "github_language": "Python",
+      "dataset_languages": {
+        "python": 2
+      },
+      "task_count": 2,
+      "stars": 3116,
+      "forks": 1002,
+      "open_issues": 224,
+      "license": "BSD-3-Clause",
+      "pushed_at": "2026-05-28T03:43:55Z",
+      "task_titles": [
+        "Add single-active-consumer priority and cancel tracking to virtual transports",
+        "Add dead-lettering, TTL, and overflow handling to virtual queues"
+      ]
+    },
+    {
+      "repo": "cockroachdb/pebble",
+      "url": "https://github.com/cockroachdb/pebble",
+      "summary": "RocksDB/LevelDB inspired key-value database in Go",
+      "github_language": "Go",
+      "dataset_languages": {
+        "go": 1
+      },
+      "task_count": 1,
+      "stars": 5906,
+      "forks": 565,
+      "open_issues": 199,
+      "license": "BSD-3-Clause",
+      "pushed_at": "2026-05-30T15:16:55Z",
+      "task_titles": [
+        "Add durability callbacks and wait APIs for sync writes"
+      ]
+    },
+    {
+      "repo": "csstree/csstree",
+      "url": "https://github.com/csstree/csstree",
+      "summary": "A tool set for CSS including fast detailed parser, walker, generator and lexer based on W3C specs and browser implementations",
+      "github_language": "JavaScript",
+      "dataset_languages": {
+        "javascript": 1
+      },
+      "task_count": 1,
+      "stars": 2105,
+      "forks": 113,
+      "open_issues": 64,
+      "license": "MIT",
+      "pushed_at": "2026-03-05T14:58:51Z",
+      "task_titles": [
+        "Add shorthand expansion and compression to the lexer"
+      ]
+    },
+    {
+      "repo": "d5/tengo",
+      "url": "https://github.com/d5/tengo",
+      "summary": "A fast script language for Go",
+      "github_language": "Go",
+      "dataset_languages": {
+        "go": 2
+      },
+      "task_count": 2,
+      "stars": 3813,
+      "forks": 330,
+      "open_issues": 88,
+      "license": "MIT",
+      "pushed_at": "2026-04-29T08:48:00Z",
+      "task_titles": [
+        "Fix isolated Go-side calls for Tengo callables and closures",
+        "Add destructuring bindings to Tengo"
+      ]
+    },
+    {
+      "repo": "dahlia/optique",
+      "url": "https://github.com/dahlia/optique",
+      "summary": "Type-safe combinatorial CLI parser for TypeScript",
+      "github_language": "TypeScript",
+      "dataset_languages": {
+        "typescript": 1
+      },
+      "task_count": 1,
+      "stars": 693,
+      "forks": 7,
+      "open_issues": 2,
+      "license": "MIT",
+      "pushed_at": "2026-05-16T02:38:20Z",
+      "task_titles": [
+        "Add conditional option dependencies to Optique"
+      ]
+    },
+    {
+      "repo": "dateutil/dateutil",
+      "url": "https://github.com/dateutil/dateutil",
+      "summary": "Useful extensions to the standard Python datetime features",
+      "github_language": "Python",
+      "dataset_languages": {
+        "python": 1
+      },
+      "task_count": 1,
+      "stars": 2619,
+      "forks": 551,
+      "open_issues": 456,
+      "license": "NOASSERTION",
+      "pushed_at": "2026-05-19T23:50:16Z",
+      "task_titles": [
+        "Add RFC 5545 timezone interoperability to dateutil recurrence parsing"
+      ]
+    },
+    {
+      "repo": "drizzle-team/drizzle-orm",
+      "url": "https://github.com/drizzle-team/drizzle-orm",
+      "summary": "ORM",
+      "github_language": "TypeScript",
+      "dataset_languages": {
+        "typescript": 1
+      },
+      "task_count": 1,
+      "stars": 34591,
+      "forks": 1413,
+      "open_issues": 1810,
+      "license": "Apache-2.0",
+      "pushed_at": "2026-05-30T14:58:19Z",
+      "task_titles": [
+        "Add typed window function builders with OVER clauses"
+      ]
+    },
+    {
+      "repo": "dry-python/returns",
+      "url": "https://github.com/dry-python/returns",
+      "summary": "Make your functions return something meaningful, typed, and safe!",
+      "github_language": "Python",
+      "dataset_languages": {
+        "python": 1
+      },
+      "task_count": 1,
+      "stars": 4297,
+      "forks": 145,
+      "open_issues": 84,
+      "license": "BSD-2-Clause",
+      "pushed_at": "2026-05-26T22:34:36Z",
+      "task_titles": [
+        "Add an error-accumulating Validated container"
+      ]
+    },
+    {
+      "repo": "dynamodb-toolbox/dynamodb-toolbox",
+      "url": "https://github.com/dynamodb-toolbox/dynamodb-toolbox",
+      "summary": "Lightweight and type-safe query builder for DynamoDB and TypeScript",
+      "github_language": "TypeScript",
+      "dataset_languages": {
+        "typescript": 2
+      },
+      "task_count": 2,
+      "stars": 2000,
+      "forks": 180,
+      "open_issues": 39,
+      "license": "MIT",
+      "pushed_at": "2026-02-07T12:02:23Z",
+      "task_titles": [
+        "Add conditional required attributes to schemas",
+        "Add lazy recursive schemas with DTO and JSON Schema export"
+      ]
+    },
+    {
+      "repo": "Effect-TS/effect",
+      "url": "https://github.com/Effect-TS/effect",
+      "summary": "Build production-ready applications in TypeScript",
+      "github_language": "TypeScript",
+      "dataset_languages": {
+        "typescript": 1
+      },
+      "task_count": 1,
+      "stars": 14441,
+      "forks": 580,
+      "open_issues": 552,
+      "license": "MIT",
+      "pushed_at": "2026-05-19T21:58:34Z",
+      "task_titles": [
+        "Add SSE streaming endpoints to HttpApi"
+      ]
+    },
+    {
+      "repo": "eicrud/eicrud",
+      "url": "https://github.com/eicrud/eicrud",
+      "summary": "An opinionated backend framework based on NestJS. Get your CRUD app up and running in no time! ⚙️🔒",
+      "github_language": "TypeScript",
+      "dataset_languages": {
+        "typescript": 1
+      },
+      "task_count": 1,
+      "stars": 810,
+      "forks": 30,
+      "open_issues": 7,
+      "license": "MIT",
+      "pushed_at": "2026-03-03T00:29:18Z",
+      "task_titles": [
+        "Add keyset cursor pagination to `$find`"
+      ]
+    },
+    {
+      "repo": "encode/httpx",
+      "url": "https://github.com/encode/httpx",
+      "summary": "A next generation HTTP client for Python. 🦋",
+      "github_language": "Python",
+      "dataset_languages": {
+        "python": 2,
+        "typescript": 1
+      },
+      "task_count": 3,
+      "stars": 15277,
+      "forks": 1156,
+      "open_issues": 145,
+      "license": "BSD-3-Clause",
+      "pushed_at": "2026-03-29T00:19:16Z",
+      "task_titles": [
+        "Add a deterministic CookieStore with modern Set-Cookie parsing",
+        "Add multipart response parsing to HTTPX",
+        "Add streaming JSON iteration to HTTPX responses"
+      ]
+    },
+    {
+      "repo": "expr-lang/expr",
+      "url": "https://github.com/expr-lang/expr",
+      "summary": "Expression language and expression evaluation for Go",
+      "github_language": "Go",
+      "dataset_languages": {
+        "go": 1
+      },
+      "task_count": 1,
+      "stars": 7879,
+      "forks": 501,
+      "open_issues": 79,
+      "license": "MIT",
+      "pushed_at": "2026-05-26T12:13:54Z",
+      "task_titles": [
+        "Add try/catch error recovery to expr"
+      ]
+    },
+    {
+      "repo": "fastapi/fastapi",
+      "url": "https://github.com/fastapi/fastapi",
+      "summary": "FastAPI framework, high performance, easy to learn, fast to code, ready for production",
+      "github_language": "Python",
+      "dataset_languages": {
+        "python": 2
+      },
+      "task_count": 2,
+      "stars": 98670,
+      "forks": 9352,
+      "open_issues": 91,
+      "license": "MIT",
+      "pushed_at": "2026-05-28T10:49:02Z",
+      "task_titles": [
+        "Add deprecation, sunset, and successor headers to FastAPI routes",
+        "Add implicit HEAD and automatic OPTIONS responses to FastAPI routes"
+      ]
+    },
+    {
+      "repo": "Fatal1ty/mashumaro",
+      "url": "https://github.com/Fatal1ty/mashumaro",
+      "summary": "Fast and well tested serialization library",
+      "github_language": "Python",
+      "dataset_languages": {
+        "python": 1
+      },
+      "task_count": 1,
+      "stars": 920,
+      "forks": 56,
+      "open_issues": 17,
+      "license": "Apache-2.0",
+      "pushed_at": "2026-05-26T11:10:06Z",
+      "task_titles": [
+        "Add flattened dataclass fields to Mashumaro field options"
+      ]
+    },
+    {
+      "repo": "fgmacedo/python-statemachine",
+      "url": "https://github.com/fgmacedo/python-statemachine",
+      "summary": "Expressive statecharts and FSMs for modern Python.",
+      "github_language": "Python",
+      "dataset_languages": {
+        "python": 1
+      },
+      "task_count": 1,
+      "stars": 1243,
+      "forks": 104,
+      "open_issues": 10,
+      "license": "MIT",
+      "pushed_at": "2026-05-19T22:56:17Z",
+      "task_titles": [
+        "Add scoped state data to state machine callbacks and history"
+      ]
+    },
+    {
+      "repo": "flightcontrolhq/superjson",
+      "url": "https://github.com/flightcontrolhq/superjson",
+      "summary": "Safely serialize JavaScript expressions to a superset of JSON, which includes Dates, BigInts, and more.",
+      "github_language": "TypeScript",
+      "dataset_languages": {
+        "typescript": 1
+      },
+      "task_count": 1,
+      "stars": 5253,
+      "forks": 117,
+      "open_issues": 42,
+      "license": "MIT",
+      "pushed_at": "2026-02-09T10:53:34Z",
+      "task_titles": [
+        "Add error stack serialization to SuperJSON"
+      ]
+    },
+    {
+      "repo": "Gallopsled/pwntools",
+      "url": "https://github.com/Gallopsled/pwntools",
+      "summary": "CTF framework and exploit development library",
+      "github_language": "Python",
+      "dataset_languages": {
+        "python": 1
+      },
+      "task_count": 1,
+      "stars": 13480,
+      "forks": 1837,
+      "open_issues": 123,
+      "license": "NOASSERTION",
+      "pushed_at": "2026-05-28T15:16:27Z",
+      "task_titles": [
+        "Add tube multiplexing to pwntools"
+      ]
+    },
+    {
+      "repo": "getarcaneapp/arcane",
+      "url": "https://github.com/getarcaneapp/arcane",
+      "summary": "Modern Docker Management, Designed for Everyone",
+      "github_language": "Go",
+      "dataset_languages": {
+        "go": 1
+      },
+      "task_count": 1,
+      "stars": 5619,
+      "forks": 201,
+      "open_issues": 130,
+      "license": "BSD-3-Clause",
+      "pushed_at": "2026-05-30T04:25:16Z",
+      "task_titles": [
+        "Add drift detection and compliance baselines"
+      ]
+    },
+    {
+      "repo": "go-critic/go-critic",
+      "url": "https://github.com/go-critic/go-critic",
+      "summary": "The most opinionated Go source code linter for code audit.",
+      "github_language": "Go",
+      "dataset_languages": {
+        "go": 1
+      },
+      "task_count": 1,
+      "stars": 2049,
+      "forks": 133,
+      "open_issues": 150,
+      "license": "MIT",
+      "pushed_at": "2026-01-18T09:02:40Z",
+      "task_titles": [
+        "Add a checker for broken doc comment links"
+      ]
+    },
+    {
+      "repo": "go-git/go-git",
+      "url": "https://github.com/go-git/go-git",
+      "summary": "A highly extensible Git implementation in pure Go.",
+      "github_language": "Go",
+      "dataset_languages": {
+        "go": 1
+      },
+      "task_count": 1,
+      "stars": 7491,
+      "forks": 949,
+      "open_issues": 206,
+      "license": "Apache-2.0",
+      "pushed_at": "2026-05-29T21:56:54Z",
+      "task_titles": [
+        "Add worktree merge conflict handling"
+      ]
+    },
+    {
+      "repo": "go-task/task",
+      "url": "https://github.com/go-task/task",
+      "summary": "A fast, cross-platform build tool inspired by Make, designed for modern workflows.",
+      "github_language": "Go",
+      "dataset_languages": {
+        "go": 1
+      },
+      "task_count": 1,
+      "stars": 15631,
+      "forks": 836,
+      "open_issues": 201,
+      "license": "MIT",
+      "pushed_at": "2026-05-30T00:52:53Z",
+      "task_titles": [
+        "Add task graph export with JSON, DOT, and text output"
+      ]
+    },
+    {
+      "repo": "golang/geo",
+      "url": "https://github.com/golang/geo",
+      "summary": "S2 geometry library in Go",
+      "github_language": "Go",
+      "dataset_languages": {
+        "go": 1
+      },
+      "task_count": 1,
+      "stars": 1838,
+      "forks": 194,
+      "open_issues": 32,
+      "license": "Apache-2.0",
+      "pushed_at": "2026-05-26T12:02:04Z",
+      "task_titles": [
+        "Add ShapeIndex encoding and decoding"
+      ]
+    },
+    {
+      "repo": "google/mobly",
+      "url": "https://github.com/google/mobly",
+      "summary": "E2E test framework for tests with complex environment requirements.",
+      "github_language": "Python",
+      "dataset_languages": {
+        "python": 1
+      },
+      "task_count": 1,
+      "stars": 739,
+      "forks": 214,
+      "open_issues": 18,
+      "license": "Apache-2.0",
+      "pushed_at": "2026-05-29T04:32:04Z",
+      "task_titles": [
+        "Add grouped test phases with synchronized barriers"
+      ]
+    },
+    {
+      "repo": "googleapis/go-genai",
+      "url": "https://github.com/googleapis/go-genai",
+      "summary": "Google Gen AI Go SDK provides an interface for developers to integrate Google's generative models into their Go applications.",
+      "github_language": "Go",
+      "dataset_languages": {
+        "go": 1
+      },
+      "task_count": 1,
+      "stars": 1130,
+      "forks": 144,
+      "open_issues": 47,
+      "license": "Apache-2.0",
+      "pushed_at": "2026-05-29T21:06:14Z",
+      "task_titles": [
+        "Expose accumulated streamed function-call args in SDK surfaces"
+      ]
+    },
+    {
+      "repo": "goreleaser/goreleaser",
+      "url": "https://github.com/goreleaser/goreleaser",
+      "summary": "Release engineering, simplified",
+      "github_language": "Go",
+      "dataset_languages": {
+        "go": 1
+      },
+      "task_count": 1,
+      "stars": 15825,
+      "forks": 1073,
+      "open_issues": 17,
+      "license": "MIT",
+      "pushed_at": "2026-05-30T07:12:50Z",
+      "task_titles": [
+        "Add retry-aware publishing audit logs"
+      ]
+    },
+    {
+      "repo": "graphql-python/gql",
+      "url": "https://github.com/graphql-python/gql",
+      "summary": "A GraphQL client in Python",
+      "github_language": "Python",
+      "dataset_languages": {
+        "python": 1
+      },
+      "task_count": 1,
+      "stars": 1675,
+      "forks": 189,
+      "open_issues": 4,
+      "license": "MIT",
+      "pushed_at": "2026-04-24T14:35:28Z",
+      "task_titles": [
+        "Add GraphQL incremental delivery with @defer and @stream"
+      ]
+    },
+    {
+      "repo": "gvergnaud/ts-pattern",
+      "url": "https://github.com/gvergnaud/ts-pattern",
+      "summary": "🎨 The exhaustive Pattern Matching library for TypeScript, with smart type inference.",
+      "github_language": "TypeScript",
+      "dataset_languages": {
+        "typescript": 1
+      },
+      "task_count": 1,
+      "stars": 15025,
+      "forks": 166,
+      "open_issues": 63,
+      "license": "MIT",
+      "pushed_at": "2026-05-25T23:36:35Z",
+      "task_titles": [
+        "Add `matchEach` to ts-pattern"
+      ]
+    },
+    {
+      "repo": "helm/helm",
+      "url": "https://github.com/helm/helm",
+      "summary": "The Kubernetes Package Manager",
+      "github_language": "Go",
+      "dataset_languages": {
+        "go": 2
+      },
+      "task_count": 2,
+      "stars": 29832,
+      "forks": 7625,
+      "open_issues": 403,
+      "license": "Apache-2.0",
+      "pushed_at": "2026-05-30T11:19:51Z",
+      "task_titles": [
+        "Add configurable array merge strategies to Helm value coalescing",
+        "Add unified manifest stream output across Helm commands"
+      ]
+    },
+    {
+      "repo": "ipython/ipython",
+      "url": "https://github.com/ipython/ipython",
+      "summary": "Official repository for IPython itself. Other repos in the IPython organization contain things like the website, documentation builds, etc.",
+      "github_language": "Python",
+      "dataset_languages": {
+        "python": 1
+      },
+      "task_count": 1,
+      "stars": 16708,
+      "forks": 4480,
+      "open_issues": 1591,
+      "license": "BSD-3-Clause",
+      "pushed_at": "2026-05-29T15:13:18Z",
+      "task_titles": [
+        "Add session bundle recording and replay to IPython"
+      ]
+    },
+    {
+      "repo": "jeffijoe/awilix",
+      "url": "https://github.com/jeffijoe/awilix",
+      "summary": "Extremely powerful Inversion of Control (IoC) container for Node.JS",
+      "github_language": "TypeScript",
+      "dataset_languages": {
+        "typescript": 1
+      },
+      "task_count": 1,
+      "stars": 4173,
+      "forks": 145,
+      "open_issues": 4,
+      "license": "MIT",
+      "pushed_at": "2026-05-09T17:40:50Z",
+      "task_titles": [
+        "Add dependency-aware async initialization to the container"
+      ]
+    },
+    {
+      "repo": "jendrikseipp/vulture",
+      "url": "https://github.com/jendrikseipp/vulture",
+      "summary": "Find dead Python code",
+      "github_language": "Python",
+      "dataset_languages": {
+        "python": 1
+      },
+      "task_count": 1,
+      "stars": 4634,
+      "forks": 187,
+      "open_issues": 58,
+      "license": "MIT",
+      "pushed_at": "2026-04-30T05:28:50Z",
+      "task_titles": [
+        "Add a persistent analysis cache to Vulture"
+      ]
+    },
+    {
+      "repo": "jkwill87/mnamer",
+      "url": "https://github.com/jkwill87/mnamer",
+      "summary": "media file renaming and organizing tool",
+      "github_language": "Python",
+      "dataset_languages": {
+        "python": 1
+      },
+      "task_count": 1,
+      "stars": 1105,
+      "forks": 104,
+      "open_issues": 104,
+      "license": "MIT",
+      "pushed_at": "2026-05-29T18:32:51Z",
+      "task_titles": [
+        "Validate daemon watch, status, and log lifecycle"
+      ]
+    },
+    {
+      "repo": "KaTeX/KaTeX",
+      "url": "https://github.com/KaTeX/KaTeX",
+      "summary": "Fast math typesetting for the web.",
+      "github_language": "TypeScript",
+      "dataset_languages": {
+        "javascript": 1
+      },
+      "task_count": 1,
+      "stars": 20114,
+      "forks": 1306,
+      "open_issues": 409,
+      "license": "MIT",
+      "pushed_at": "2026-05-30T11:30:03Z",
+      "task_titles": [
+        "Add `\\multicolumn` column spans to array-like environments"
+      ]
+    },
+    {
+      "repo": "keajs/kea",
+      "url": "https://github.com/keajs/kea",
+      "summary": "Batteries Included State Management for React",
+      "github_language": "JavaScript",
+      "dataset_languages": {
+        "typescript": 1
+      },
+      "task_count": 1,
+      "stars": 1992,
+      "forks": 51,
+      "open_issues": 7,
+      "license": "MIT",
+      "pushed_at": "2026-02-26T12:30:58Z",
+      "task_titles": [
+        "Add atomic signal selectors to Kea"
+      ]
+    },
+    {
+      "repo": "kgateway-dev/kgateway",
+      "url": "https://github.com/kgateway-dev/kgateway",
+      "summary": "The Cloud-Native API Gateway and AI Gateway",
+      "github_language": "Go",
+      "dataset_languages": {
+        "go": 1
+      },
+      "task_count": 1,
+      "stars": 5538,
+      "forks": 756,
+      "open_issues": 370,
+      "license": "Apache-2.0",
+      "pushed_at": "2026-05-29T22:40:50Z",
+      "task_titles": [
+        "Add consistent hash policy support to TrafficPolicy"
+      ]
+    },
+    {
+      "repo": "kysely-org/kysely",
+      "url": "https://github.com/kysely-org/kysely",
+      "summary": "A type-safe TypeScript SQL query builder",
+      "github_language": "TypeScript",
+      "dataset_languages": {
+        "typescript": 1
+      },
+      "task_count": 1,
+      "stars": 13893,
+      "forks": 410,
+      "open_issues": 162,
+      "license": "MIT",
+      "pushed_at": "2026-05-29T05:25:09Z",
+      "task_titles": [
+        "Add grouping-set and window-frame SQL helpers"
+      ]
+    },
+    {
+      "repo": "langchain-ai/langchain",
+      "url": "https://github.com/langchain-ai/langchain",
+      "summary": "The agent engineering platform.",
+      "github_language": "Python",
+      "dataset_languages": {
+        "python": 1
+      },
+      "task_count": 1,
+      "stars": 138042,
+      "forks": 22869,
+      "open_issues": 600,
+      "license": "MIT",
+      "pushed_at": "2026-05-30T08:49:10Z",
+      "task_titles": [
+        "Add request coalescing to `Runnable`"
+      ]
+    },
+    {
+      "repo": "liweiyi88/onedump",
+      "url": "https://github.com/liweiyi88/onedump",
+      "summary": "Effortless database administration tool",
+      "github_language": "Go",
+      "dataset_languages": {
+        "go": 1
+      },
+      "task_count": 1,
+      "stars": 966,
+      "forks": 66,
+      "open_issues": 6,
+      "license": "MIT",
+      "pushed_at": "2026-04-25T00:11:52Z",
+      "task_titles": [
+        "Add transparent encryption to dump uploads"
+      ]
+    },
+    {
+      "repo": "mattn/anko",
+      "url": "https://github.com/mattn/anko",
+      "summary": "Scriptable interpreter written in golang",
+      "github_language": "Go",
+      "dataset_languages": {
+        "go": 2
+      },
+      "task_count": 2,
+      "stars": 1565,
+      "forks": 131,
+      "open_issues": 25,
+      "license": "MIT",
+      "pushed_at": "2026-03-20T14:57:16Z",
+      "task_titles": [
+        "Add default arguments to Anko function parameters",
+        "Add typed variable bindings to Anko"
+      ]
+    },
+    {
+      "repo": "meriyah/meriyah",
+      "url": "https://github.com/meriyah/meriyah",
+      "summary": "A 100% compliant, self-hosted javascript parser  - https://meriyah.github.io/meriyah",
+      "github_language": "TypeScript",
+      "dataset_languages": {
+        "typescript": 1
+      },
+      "task_count": 1,
+      "stars": 1205,
+      "forks": 52,
+      "open_issues": 21,
+      "license": "ISC",
+      "pushed_at": "2026-05-01T09:51:24Z",
+      "task_titles": [
+        "Add explicit resource management declarations to the parser"
+      ]
+    },
+    {
+      "repo": "muesli/termenv",
+      "url": "https://github.com/muesli/termenv",
+      "summary": "Advanced ANSI style & color support for your terminal applications",
+      "github_language": "Go",
+      "dataset_languages": {
+        "go": 1
+      },
+      "task_count": 1,
+      "stars": 1993,
+      "forks": 89,
+      "open_issues": 49,
+      "license": "MIT",
+      "pushed_at": "2025-11-21T08:05:07Z",
+      "task_titles": [
+        "Preserve ANSI resets during truncation and styling"
+      ]
+    },
+    {
+      "repo": "narwhals-dev/narwhals",
+      "url": "https://github.com/narwhals-dev/narwhals",
+      "summary": "Lightweight and extensible compatibility layer between dataframe libraries!",
+      "github_language": "Python",
+      "dataset_languages": {
+        "python": 1
+      },
+      "task_count": 1,
+      "stars": 1615,
+      "forks": 193,
+      "open_issues": 218,
+      "license": "MIT",
+      "pushed_at": "2026-05-30T13:43:34Z",
+      "task_titles": [
+        "Add rolling min, max, median, and quantile methods"
+      ]
+    },
+    {
+      "repo": "nidhaloff/igel",
+      "url": "https://github.com/nidhaloff/igel",
+      "summary": "a delightful machine learning tool that allows you to train, test, and use models without writing code",
+      "github_language": "Python",
+      "dataset_languages": {
+        "python": 1
+      },
+      "task_count": 1,
+      "stars": 3135,
+      "forks": 206,
+      "open_issues": 18,
+      "license": "MIT",
+      "pushed_at": "2025-12-07T18:25:00Z",
+      "task_titles": [
+        "Persist the fitted feature schema across evaluate, predict, serve, and export"
+      ]
+    },
+    {
+      "repo": "noahbald/oxvg",
+      "url": "https://github.com/noahbald/oxvg",
+      "summary": "Fastest SVG toolchain for optimisation, minification, linting, and actions. Usable via CLI, Node, Wasm, or Rust.",
+      "github_language": "Rust",
+      "dataset_languages": {
+        "rust": 1
+      },
+      "task_count": 1,
+      "stars": 554,
+      "forks": 10,
+      "open_issues": 6,
+      "license": "MIT",
+      "pushed_at": "2026-05-30T01:58:41Z",
+      "task_titles": [
+        "Preserve structure needed by stylesheet selectors"
+      ]
+    },
+    {
+      "repo": "numba/numba",
+      "url": "https://github.com/numba/numba",
+      "summary": "NumPy aware dynamic Python compiler using LLVM",
+      "github_language": "Python",
+      "dataset_languages": {
+        "python": 1
+      },
+      "task_count": 1,
+      "stars": 11031,
+      "forks": 1273,
+      "open_issues": 1785,
+      "license": "BSD-2-Clause",
+      "pushed_at": "2026-05-29T18:29:39Z",
+      "task_titles": [
+        "Add boundary modes to `@stencil`"
+      ]
+    },
+    {
+      "repo": "open-circle/valibot",
+      "url": "https://github.com/open-circle/valibot",
+      "summary": "The modular and type safe schema library for validating structural data 🤖",
+      "github_language": "TypeScript",
+      "dataset_languages": {
+        "typescript": 1
+      },
+      "task_count": 1,
+      "stars": 8734,
+      "forks": 334,
+      "open_issues": 123,
+      "license": "MIT",
+      "pushed_at": "2026-05-26T03:55:54Z",
+      "task_titles": [
+        "Add recursive schema composition to Valibot"
+      ]
+    },
+    {
+      "repo": "open-policy-agent/opa",
+      "url": "https://github.com/open-policy-agent/opa",
+      "summary": "Open Policy Agent (OPA) is an open source, general-purpose policy engine.",
+      "github_language": "Go",
+      "dataset_languages": {
+        "go": 2
+      },
+      "task_count": 2,
+      "stars": 11801,
+      "forks": 1576,
+      "open_issues": 353,
+      "license": "Apache-2.0",
+      "pushed_at": "2026-05-29T17:57:44Z",
+      "task_titles": [
+        "Add rule evaluation profiling to Rego",
+        "Reconstruct template strings in partial evaluation output"
+      ]
+    },
+    {
+      "repo": "open2b/scriggo",
+      "url": "https://github.com/open2b/scriggo",
+      "summary": "The world’s most powerful template engine and Go embeddable interpreter",
+      "github_language": "Go",
+      "dataset_languages": {
+        "go": 1
+      },
+      "task_count": 1,
+      "stars": 572,
+      "forks": 27,
+      "open_issues": 103,
+      "license": "BSD-3-Clause",
+      "pushed_at": "2026-05-15T13:21:08Z",
+      "task_titles": [
+        "Add method declarations and interface dispatch to Scriggo"
+      ]
+    },
+    {
+      "repo": "Owloops/updo",
+      "url": "https://github.com/Owloops/updo",
+      "summary": "Uptime monitoring CLI tool with alerting and advanced settings",
+      "github_language": "Go",
+      "dataset_languages": {
+        "go": 1
+      },
+      "task_count": 1,
+      "stars": 989,
+      "forks": 47,
+      "open_issues": 5,
+      "license": "MIT",
+      "pushed_at": "2026-05-26T08:12:19Z",
+      "task_titles": [
+        "Add policy-based alerting for failures, latency, and SSL expiry"
+      ]
+    },
+    {
+      "repo": "pest-parser/pest",
+      "url": "https://github.com/pest-parser/pest",
+      "summary": "The Elegant Parser",
+      "github_language": "Rust",
+      "dataset_languages": {
+        "rust": 1
+      },
+      "task_count": 1,
+      "stars": 5346,
+      "forks": 291,
+      "open_issues": 70,
+      "license": "Apache-2.0",
+      "pushed_at": "2026-04-19T05:02:47Z",
+      "task_titles": [
+        "Coalesce qualifying choices into character classes"
+      ]
+    },
+    {
+      "repo": "platers/obsidian-linter",
+      "url": "https://github.com/platers/obsidian-linter",
+      "summary": "An Obsidian plugin that formats and styles your notes with a focus on configurability and extensibility.",
+      "github_language": "TypeScript",
+      "dataset_languages": {
+        "typescript": 3
+      },
+      "task_count": 3,
+      "stars": 1947,
+      "forks": 139,
+      "open_issues": 237,
+      "license": "MIT",
+      "pushed_at": "2026-05-09T01:01:48Z",
+      "task_titles": [
+        "Add automatic table of contents generation for Obsidian linter",
+        "Add link format conversion between wiki and markdown syntax",
+        "Add scoped per-rule ignore markers to Obsidian Linter"
+      ]
+    },
+    {
+      "repo": "pmndrs/koota",
+      "url": "https://github.com/pmndrs/koota",
+      "summary": "🌎 Performant real-time state management for React and TypeScript",
+      "github_language": "TypeScript",
+      "dataset_languages": {
+        "python": 1,
+        "typescript": 4
+      },
+      "task_count": 5,
+      "stars": 691,
+      "forks": 33,
+      "open_issues": 40,
+      "license": "ISC",
+      "pushed_at": "2026-05-09T02:27:19Z",
+      "task_titles": [
+        "Add composite trait aspects to Koota",
+        "Add a deferred mutation buffer to batch entity changes",
+        "Add entity snapshot and rollback APIs to Koota",
+        "Add pair-level relation tracking modifiers",
+        "Add value-based query predicates to Koota"
+      ]
+    },
+    {
+      "repo": "prometheus/prometheus",
+      "url": "https://github.com/prometheus/prometheus",
+      "summary": "The Prometheus monitoring system and time series database.",
+      "github_language": "Go",
+      "dataset_languages": {
+        "go": 1,
+        "typescript": 1
+      },
+      "task_count": 2,
+      "stars": 64204,
+      "forks": 10455,
+      "open_issues": 805,
+      "license": "Apache-2.0",
+      "pushed_at": "2026-05-29T15:11:12Z",
+      "task_titles": [
+        "Add transactional reload status and rollback tracking to Prometheus",
+        "Fix PromQL label sorting across typed and untyped values"
+      ]
+    },
+    {
+      "repo": "psd-tools/psd-tools",
+      "url": "https://github.com/psd-tools/psd-tools",
+      "summary": "Python package for reading Adobe Photoshop PSD files",
+      "github_language": "Python",
+      "dataset_languages": {
+        "python": 1
+      },
+      "task_count": 1,
+      "stars": 1394,
+      "forks": 208,
+      "open_issues": 55,
+      "license": "MIT",
+      "pushed_at": "2026-05-30T01:42:59Z",
+      "task_titles": [
+        "Add typed blend range access and blend-if compositing"
+      ]
+    },
+    {
+      "repo": "PyCQA/bandit",
+      "url": "https://github.com/PyCQA/bandit",
+      "summary": "Bandit is a tool designed to find common security issues in Python code.",
+      "github_language": "Python",
+      "dataset_languages": {
+        "python": 3
+      },
+      "task_count": 3,
+      "stars": 8065,
+      "forks": 769,
+      "open_issues": 243,
+      "license": "Apache-2.0",
+      "pushed_at": "2026-05-25T22:28:37Z",
+      "task_titles": [
+        "Add incremental cache controls to Bandit",
+        "Add interprocedural taint checks for Bandit injection sinks",
+        "Add structured nosec directives for regions and next line"
+      ]
+    },
+    {
+      "repo": "python-attrs/cattrs",
+      "url": "https://github.com/python-attrs/cattrs",
+      "summary": "Composable custom class converters for attrs, dataclasses and friends.",
+      "github_language": "Python",
+      "dataset_languages": {
+        "python": 1
+      },
+      "task_count": 1,
+      "stars": 1034,
+      "forks": 136,
+      "open_issues": 92,
+      "license": "MIT",
+      "pushed_at": "2026-05-19T20:37:45Z",
+      "task_titles": [
+        "Add partial structuring with error recovery to cattrs"
+      ]
+    },
+    {
+      "repo": "python-poetry/tomlkit",
+      "url": "https://github.com/python-poetry/tomlkit",
+      "summary": "Style-preserving TOML library for Python",
+      "github_language": "Python",
+      "dataset_languages": {
+        "python": 1
+      },
+      "task_count": 1,
+      "stars": 824,
+      "forks": 117,
+      "open_issues": 45,
+      "license": "MIT",
+      "pushed_at": "2026-05-27T01:24:40Z",
+      "task_titles": [
+        "Add bidirectional TOML table converters"
+      ]
+    },
+    {
+      "repo": "reagento/adaptix",
+      "url": "https://github.com/reagento/adaptix",
+      "summary": "An extremely flexible and configurable data model conversion library.",
+      "github_language": "Python",
+      "dataset_languages": {
+        "python": 1
+      },
+      "task_count": 1,
+      "stars": 599,
+      "forks": 32,
+      "open_issues": 52,
+      "license": "Apache-2.0",
+      "pushed_at": "2026-05-22T12:06:46Z",
+      "task_titles": [
+        "Add input key aliases to name mapping"
+      ]
+    },
+    {
+      "repo": "rhysd/actionlint",
+      "url": "https://github.com/rhysd/actionlint",
+      "summary": ":octocat: Static checker for GitHub Actions workflow files",
+      "github_language": "Go",
+      "dataset_languages": {
+        "go": 1
+      },
+      "task_count": 1,
+      "stars": 3910,
+      "forks": 227,
+      "open_issues": 142,
+      "license": "MIT",
+      "pushed_at": "2026-04-19T14:46:58Z",
+      "task_titles": [
+        "Add action pinning linting for actions and reusable workflows"
+      ]
+    },
+    {
+      "repo": "sharkdp/fd",
+      "url": "https://github.com/sharkdp/fd",
+      "summary": "A simple, fast and user-friendly alternative to 'find'",
+      "github_language": "Rust",
+      "dataset_languages": {
+        "rust": 1
+      },
+      "task_count": 1,
+      "stars": 43160,
+      "forks": 1071,
+      "open_issues": 183,
+      "license": "Apache-2.0",
+      "pushed_at": "2026-05-28T05:50:39Z",
+      "task_titles": [
+        "Add deterministic multi-key sorting to fd"
+      ]
+    },
+    {
+      "repo": "simonw/sqlite-utils",
+      "url": "https://github.com/simonw/sqlite-utils",
+      "summary": "Python CLI utility and library for manipulating SQLite databases",
+      "github_language": "Python",
+      "dataset_languages": {
+        "python": 1
+      },
+      "task_count": 1,
+      "stars": 2058,
+      "forks": 145,
+      "open_issues": 157,
+      "license": "Apache-2.0",
+      "pushed_at": "2026-05-17T23:52:48Z",
+      "task_titles": [
+        "Add safe import checkpoints and invariant validation"
+      ]
+    },
+    {
+      "repo": "skrub-data/skrub",
+      "url": "https://github.com/skrub-data/skrub",
+      "summary": "Machine learning with dataframes",
+      "github_language": "Python",
+      "dataset_languages": {
+        "python": 1
+      },
+      "task_count": 1,
+      "stars": 1616,
+      "forks": 233,
+      "open_issues": 157,
+      "license": "BSD-3-Clause",
+      "pushed_at": "2026-05-30T14:43:58Z",
+      "task_titles": [
+        "Add duration encoding to TableVectorizer"
+      ]
+    },
+    {
+      "repo": "slab/quill",
+      "url": "https://github.com/slab/quill",
+      "summary": "Quill is a modern WYSIWYG editor built for compatibility and extensibility",
+      "github_language": "TypeScript",
+      "dataset_languages": {
+        "typescript": 1
+      },
+      "task_count": 1,
+      "stars": 47121,
+      "forks": 3650,
+      "open_issues": 650,
+      "license": "BSD-3-Clause",
+      "pushed_at": "2025-07-25T06:09:23Z",
+      "task_titles": [
+        "Reuse one toolbar across multiple Quill editors"
+      ]
+    },
+    {
+      "repo": "sql-formatter-org/sql-formatter",
+      "url": "https://github.com/sql-formatter-org/sql-formatter",
+      "summary": "A whitespace formatter for different query languages",
+      "github_language": "TypeScript",
+      "dataset_languages": {
+        "typescript": 1
+      },
+      "task_count": 1,
+      "stars": 2860,
+      "forks": 448,
+      "open_issues": 76,
+      "license": "MIT",
+      "pushed_at": "2026-05-17T18:03:01Z",
+      "task_titles": [
+        "Format BigQuery pipe syntax queries correctly"
+      ]
+    },
+    {
+      "repo": "TanStack/query",
+      "url": "https://github.com/TanStack/query",
+      "summary": "🤖 Powerful asynchronous state management, server-state utilities and data fetching for the web. TS/JS, React Query, Solid Query, Svelte Query and Vue Query.",
+      "github_language": "TypeScript",
+      "dataset_languages": {
+        "typescript": 1
+      },
+      "task_count": 1,
+      "stars": 49534,
+      "forks": 3854,
+      "open_issues": 198,
+      "license": "MIT",
+      "pushed_at": "2026-05-30T05:52:14Z",
+      "task_titles": [
+        "Preserve restored query state in persisted snapshots"
+      ]
+    },
+    {
+      "repo": "tconbeer/sqlfmt",
+      "url": "https://github.com/tconbeer/sqlfmt",
+      "summary": "sqlfmt formats your dbt SQL files so you don't have to",
+      "github_language": "Python",
+      "dataset_languages": {
+        "python": 1
+      },
+      "task_count": 1,
+      "stars": 535,
+      "forks": 28,
+      "open_issues": 47,
+      "license": "NOASSERTION",
+      "pushed_at": "2026-05-21T22:14:58Z",
+      "task_titles": [
+        "Format CREATE TABLE DDL and add DDL parsing helpers"
+      ]
+    },
+    {
+      "repo": "testem/testem",
+      "url": "https://github.com/testem/testem",
+      "summary": "Test'em 'Scripts! A test runner that makes Javascript unit testing fun.",
+      "github_language": "JavaScript",
+      "dataset_languages": {
+        "javascript": 2
+      },
+      "task_count": 2,
+      "stars": 2920,
+      "forks": 406,
+      "open_issues": 110,
+      "license": "MIT",
+      "pushed_at": "2026-05-26T19:58:01Z",
+      "task_titles": [
+        "Add bail-on-test-failure handling to Testem",
+        "Partition report files by launcher and expand report templates"
+      ]
+    },
+    {
+      "repo": "Textualize/textual",
+      "url": "https://github.com/Textualize/textual",
+      "summary": "The lean application framework for Python.  Build sophisticated user interfaces with a simple Python API. Run your apps in the terminal and a web browser.",
+      "github_language": "Python",
+      "dataset_languages": {
+        "python": 2
+      },
+      "task_count": 2,
+      "stars": 36088,
+      "forks": 1204,
+      "open_issues": 281,
+      "license": "MIT",
+      "pushed_at": "2026-05-27T07:26:35Z",
+      "task_titles": [
+        "Complete Kitty keyboard phases and stable fallback key metadata",
+        "Restore RichLog follow-state parity and expand reflow behavior"
+      ]
+    },
+    {
+      "repo": "TomWright/dasel",
+      "url": "https://github.com/TomWright/dasel",
+      "summary": "Unified querying, transformation, and modification of JSON, TOML, YAML, XML, INI, HCL, KDL and CSV.",
+      "github_language": "Go",
+      "dataset_languages": {
+        "go": 1
+      },
+      "task_count": 1,
+      "stars": 7958,
+      "forks": 167,
+      "open_issues": 20,
+      "license": "MIT",
+      "pushed_at": "2026-05-22T11:16:27Z",
+      "task_titles": [
+        "Add HTML document format handling to Dasel"
+      ]
+    },
+    {
+      "repo": "traefik/yaegi",
+      "url": "https://github.com/traefik/yaegi",
+      "summary": "Yaegi is Another Elegant Go Interpreter",
+      "github_language": "Go",
+      "dataset_languages": {
+        "go": 1
+      },
+      "task_count": 1,
+      "stars": 8254,
+      "forks": 411,
+      "open_issues": 178,
+      "license": "Apache-2.0",
+      "pushed_at": "2026-02-09T08:56:05Z",
+      "task_titles": [
+        "Add go:embed directive support for interpreted packages"
+      ]
+    },
+    {
+      "repo": "true-myth/true-myth",
+      "url": "https://github.com/true-myth/true-myth",
+      "summary": "Safe and idiomatic TypeScript types to handle null, error, and async code handling: Maybe, Result, and Task types that are really nice.",
+      "github_language": "TypeScript",
+      "dataset_languages": {
+        "typescript": 1
+      },
+      "task_count": 1,
+      "stars": 1341,
+      "forks": 35,
+      "open_issues": 13,
+      "license": "MIT",
+      "pushed_at": "2026-05-28T11:49:44Z",
+      "task_titles": [
+        "Add iterable collection combinators to true-myth"
+      ]
+    },
+    {
+      "repo": "unjs/ofetch",
+      "url": "https://github.com/unjs/ofetch",
+      "summary": "😱 A better fetch API. Works everywhere.",
+      "github_language": "TypeScript",
+      "dataset_languages": {
+        "typescript": 1
+      },
+      "task_count": 1,
+      "stars": 5310,
+      "forks": 168,
+      "open_issues": 98,
+      "license": "MIT",
+      "pushed_at": "2026-05-30T14:43:18Z",
+      "task_titles": [
+        "Add a per-origin circuit breaker to ofetch"
+      ]
+    },
+    {
+      "repo": "vadimdemedes/ink",
+      "url": "https://github.com/vadimdemedes/ink",
+      "summary": "🌈 React for interactive command-line apps",
+      "github_language": "TypeScript",
+      "dataset_languages": {
+        "typescript": 1
+      },
+      "task_count": 1,
+      "stars": 38653,
+      "forks": 997,
+      "open_issues": 27,
+      "license": "MIT",
+      "pushed_at": "2026-05-29T21:15:43Z",
+      "task_titles": [
+        "Add CSS Grid layout to the Box component"
+      ]
+    },
+    {
+      "repo": "vitest-dev/vitest",
+      "url": "https://github.com/vitest-dev/vitest",
+      "summary": "Next generation testing framework powered by Vite.",
+      "github_language": "TypeScript",
+      "dataset_languages": {
+        "typescript": 1
+      },
+      "task_count": 1,
+      "stars": 16604,
+      "forks": 1785,
+      "open_issues": 394,
+      "license": "MIT",
+      "pushed_at": "2026-05-30T09:20:16Z",
+      "task_titles": [
+        "Add duration-aware sharding to Vitest"
+      ]
+    },
+    {
+      "repo": "wasmi-labs/wasmi",
+      "url": "https://github.com/wasmi-labs/wasmi",
+      "summary": "Efficient and versatile WebAssembly interpreter for embedded systems.",
+      "github_language": "Rust",
+      "dataset_languages": {
+        "rust": 1
+      },
+      "task_count": 1,
+      "stars": 2122,
+      "forks": 351,
+      "open_issues": 47,
+      "license": "Apache-2.0",
+      "pushed_at": "2026-05-30T13:19:05Z",
+      "task_titles": [
+        "Add trap coredump generation to wasmi"
+      ]
+    },
+    {
+      "repo": "wazero/wazero",
+      "url": "https://github.com/wazero/wazero",
+      "summary": "wazero: the zero dependency WebAssembly runtime for Go developers",
+      "github_language": "Go",
+      "dataset_languages": {
+        "go": 1
+      },
+      "task_count": 1,
+      "stars": 6155,
+      "forks": 333,
+      "open_issues": 30,
+      "license": "Apache-2.0",
+      "pushed_at": "2026-05-29T09:46:16Z",
+      "task_titles": [
+        "Add multi-module memory snapshots to wazero"
+      ]
+    },
+    {
+      "repo": "xtaci/kcp-go",
+      "url": "https://github.com/xtaci/kcp-go",
+      "summary": "A crypto-secure Reliable-UDP library for Golang with FEC support.",
+      "github_language": "Go",
+      "dataset_languages": {
+        "go": 1
+      },
+      "task_count": 1,
+      "stars": 4500,
+      "forks": 796,
+      "open_issues": 68,
+      "license": "MIT",
+      "pushed_at": "2026-05-15T06:23:56Z",
+      "task_titles": [
+        "Add multiplexed ordered streams over KCP"
+      ]
+    },
+    {
+      "repo": "yjs/yjs",
+      "url": "https://github.com/yjs/yjs",
+      "summary": "Shared data types for building collaborative software",
+      "github_language": "JavaScript",
+      "dataset_languages": {
+        "javascript": 1
+      },
+      "task_count": 1,
+      "stars": 21926,
+      "forks": 776,
+      "open_issues": 131,
+      "license": "NOASSERTION",
+      "pushed_at": "2026-05-28T16:41:39Z",
+      "task_titles": [
+        "Add deterministic map conflict detection to Y.Map writes"
+      ]
+    }
+  ]
+}

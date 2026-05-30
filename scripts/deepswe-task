@@ -1,0 +1,556 @@
+#!/usr/bin/env python3
+"""Local human workflow helper for DeepSWE Harbor tasks."""
+
+from __future__ import annotations
+
+import argparse
+import os
+import shutil
+import subprocess
+import sys
+import textwrap
+from pathlib import Path
+
+try:
+    import tomllib
+except ModuleNotFoundError:  # pragma: no cover - Python < 3.11 fallback.
+    import tomli as tomllib  # type: ignore[no-redef]
+
+
+ROOT = Path(__file__).resolve().parents[1]
+TASKS_DIR = ROOT / "tasks"
+WORKSPACES_DIR = ROOT / "workspaces"
+PROXY_TOOLS = ("go", "gofmt", "goimports", "make")
+
+
+class TaskError(RuntimeError):
+    pass
+
+
+def run(
+    args: list[str],
+    *,
+    cwd: Path | None = None,
+    check: bool = True,
+    capture: bool = False,
+    env: dict[str, str] | None = None,
+) -> subprocess.CompletedProcess[str]:
+    print("+ " + " ".join(str(a) for a in args))
+    return subprocess.run(
+        args,
+        cwd=cwd,
+        check=check,
+        text=True,
+        capture_output=capture,
+        env=env,
+    )
+
+
+def load_task(task_id: str) -> tuple[Path, dict]:
+    task_dir = TASKS_DIR / task_id
+    task_toml = task_dir / "task.toml"
+    if not task_toml.exists():
+        raise TaskError(f"Task not found: {task_id} ({task_toml})")
+    with task_toml.open("rb") as f:
+        return task_dir, tomllib.load(f)
+
+
+def task_workspace(task_id: str) -> Path:
+    return WORKSPACES_DIR / task_id
+
+
+def task_image(task_dir: Path, config: dict, task_id: str, force_build: bool) -> str:
+    env_config = config.get("environment", {})
+    prebuilt = env_config.get("docker_image")
+    if prebuilt and not force_build:
+        inspected = run(["docker", "image", "inspect", prebuilt], check=False, capture=True)
+        if inspected.returncode != 0:
+            run(["docker", "pull", prebuilt])
+        return prebuilt
+
+    image = f"deepswe-{task_id}:local"
+    dockerfile = task_dir / "environment" / "Dockerfile"
+    if not dockerfile.exists():
+        raise TaskError(f"No prebuilt image and no Dockerfile at {dockerfile}")
+    run(["docker", "build", "-t", image, str(dockerfile.parent)])
+    return image
+
+
+def write_workspace_notes(task_id: str, task_dir: Path, config: dict, workspace: Path) -> None:
+    metadata = config.get("metadata", {})
+    instruction = (task_dir / "instruction.md").read_text(encoding="utf-8")
+    prompt = workspace / "PROMPT.md"
+    prompt.write_text(instruction + "\n", encoding="utf-8")
+
+    notes = workspace / "WORKSPACE.md"
+    notes.write_text(
+        textwrap.dedent(
+            f"""\
+            # {task_id}
+
+            Repository: {metadata.get("repository_url", "unknown")}
+            Base commit: {metadata.get("base_commit_hash", "unknown")}
+            Language: {metadata.get("language", "unknown")}
+
+            Editable source lives in:
+
+            ```text
+            {workspace / "app"}
+            ```
+
+            Useful commands from the DeepSWE repo root:
+
+            ```bash
+            scripts/deepswe-task code {task_id}
+            scripts/deepswe-task codex {task_id}
+            scripts/deepswe-task shell {task_id}
+            scripts/deepswe-task verify {task_id}
+            scripts/deepswe-task diff {task_id}
+            ```
+
+            To open over SSH from another machine:
+
+            ```bash
+            code --remote ssh-remote+<host> {workspace / "app"}
+            ```
+            """
+        ),
+        encoding="utf-8",
+    )
+
+
+def copy_app_from_image(image: str, app_dir: Path) -> None:
+    container_id = run(["docker", "create", image], capture=True).stdout.strip()
+    try:
+        app_dir.mkdir(parents=True, exist_ok=True)
+        run(["docker", "cp", f"{container_id}:/app/.", str(app_dir)])
+    finally:
+        run(["docker", "rm", container_id], check=False)
+
+
+def copy_app_from_git(config: dict, app_dir: Path) -> None:
+    metadata = config.get("metadata", {})
+    repo_url = metadata.get("repository_url")
+    base = metadata.get("base_commit_hash")
+    if not repo_url or not base:
+        raise TaskError("Task metadata has no repository_url/base_commit_hash fallback")
+    app_dir.parent.mkdir(parents=True, exist_ok=True)
+    run(["git", "clone", repo_url, str(app_dir)])
+    run(["git", "checkout", base], cwd=app_dir)
+    run(["git", "submodule", "update", "--init", "--recursive"], cwd=app_dir, check=False)
+
+
+def app_has_base_commit(app_dir: Path, config: dict) -> bool:
+    base = config.get("metadata", {}).get("base_commit_hash")
+    if not base:
+        return True
+    result = subprocess.run(
+        ["git", "rev-parse", "--verify", f"{base}^{{commit}}"],
+        cwd=app_dir,
+        text=True,
+        capture_output=True,
+    )
+    return result.returncode == 0
+
+
+def cmd_setup(args: argparse.Namespace) -> None:
+    task_dir, config = load_task(args.task)
+    workspace = task_workspace(args.task)
+    app_dir = workspace / "app"
+
+    if app_dir.exists() and any(app_dir.iterdir()):
+        if not args.reset:
+            raise TaskError(
+                f"{app_dir} already exists. Re-run with --reset to recreate it."
+            )
+        shutil.rmtree(app_dir)
+
+    workspace.mkdir(parents=True, exist_ok=True)
+    image = "unavailable"
+    try:
+        image = task_image(task_dir, config, args.task, args.force_build)
+        copy_app_from_image(image, app_dir)
+    except subprocess.CalledProcessError:
+        if args.force_build:
+            raise
+        print("Docker image setup failed; cloning task repository instead.")
+        if app_dir.exists():
+            shutil.rmtree(app_dir)
+        copy_app_from_git(config, app_dir)
+
+    if not app_has_base_commit(app_dir, config) and not args.force_build:
+        print("Copied /app is not a valid git checkout for this task; cloning upstream.")
+        shutil.rmtree(app_dir)
+        copy_app_from_git(config, app_dir)
+    if not app_has_base_commit(app_dir, config):
+        raise TaskError(
+            "Workspace was created, but the task base commit is not present in /app."
+        )
+    write_workspace_notes(args.task, task_dir, config, workspace)
+
+    print()
+    print(f"Workspace ready: {app_dir}")
+    print(f"Prompt:          {workspace / 'PROMPT.md'}")
+    print(f"Image:           {image}")
+
+
+def require_workspace(task_id: str) -> tuple[Path, Path, Path, dict]:
+    task_dir, config = load_task(task_id)
+    workspace = task_workspace(task_id)
+    app_dir = workspace / "app"
+    if not app_dir.exists():
+        raise TaskError(f"Workspace missing. Run: scripts/deepswe-task setup {task_id}")
+    return task_dir, workspace, app_dir, config
+
+
+def proxy_bin_dir(workspace: Path) -> Path:
+    return workspace / ".bin"
+
+
+def ensure_tool_proxies(
+    task_id: str,
+    task_dir: Path,
+    workspace: Path,
+    app_dir: Path,
+    config: dict,
+    *,
+    force_build: bool = False,
+) -> Path:
+    image = task_image(task_dir, config, task_id, force_build)
+    bin_dir = proxy_bin_dir(workspace)
+    cache_dir = workspace / ".cache" / "docker-tools"
+    bin_dir.mkdir(parents=True, exist_ok=True)
+    cache_dir.mkdir(parents=True, exist_ok=True)
+
+    app = app_dir.resolve().as_posix()
+    cache = cache_dir.resolve().as_posix()
+    script = textwrap.dedent(
+        f"""\
+        #!/usr/bin/env bash
+        set -euo pipefail
+
+        APP_DIR={app!r}
+        CACHE_DIR={cache!r}
+        IMAGE={image!r}
+        TOOL="$(basename "$0")"
+
+        mkdir -p "$CACHE_DIR/go" "$CACHE_DIR/go-build" "$CACHE_DIR/tmp"
+
+        case "$PWD" in
+          "$APP_DIR"/*|"$APP_DIR")
+            WORKDIR="$PWD"
+            ;;
+          *)
+            WORKDIR="$APP_DIR"
+            ;;
+        esac
+
+        exec docker run --rm --platform linux/amd64 \\
+          -e GOPATH="$CACHE_DIR/go" \\
+          -e GOMODCACHE="$CACHE_DIR/go/pkg/mod" \\
+          -e GOCACHE="$CACHE_DIR/go-build" \\
+          -e TMPDIR="$CACHE_DIR/tmp" \\
+          -v "$APP_DIR:$APP_DIR" \\
+          -v "$APP_DIR:/app" \\
+          -v "$CACHE_DIR:$CACHE_DIR" \\
+          -w "$WORKDIR" \\
+          "$IMAGE" "$TOOL" "$@"
+        """
+    )
+    for tool in PROXY_TOOLS:
+        path = bin_dir / tool
+        path.write_text(script, encoding="utf-8")
+        path.chmod(0o755)
+    return bin_dir
+
+
+def cmd_code(args: argparse.Namespace) -> None:
+    _, _, app_dir, _ = require_workspace(args.task)
+    code = shutil.which("code")
+    if code is None:
+        print(f"VS Code CLI not found. Open this folder manually:\n{app_dir}")
+        return
+    run([code, str(app_dir)], check=False)
+
+
+def cmd_codex(args: argparse.Namespace) -> None:
+    task_dir, workspace, app_dir, config = require_workspace(args.task)
+    codex = shutil.which("codex")
+    if codex is None:
+        raise TaskError("codex CLI not found on PATH")
+
+    sandbox = "danger-full-access" if args.allow_docker else args.sandbox
+    print(f"Starting Codex in {app_dir}")
+    print(f"Task prompt: {workspace / 'PROMPT.md'}")
+    if args.allow_docker:
+        print("Docker access: enabled via Codex danger-full-access sandbox")
+    prompt = (workspace / "PROMPT.md").read_text(encoding="utf-8")
+    cmd = [
+        codex,
+        "-m",
+        args.model,
+        "--sandbox",
+        sandbox,
+        "--ask-for-approval",
+        args.approval,
+    ]
+    if args.exec:
+        cmd = [
+            codex,
+            "exec",
+            "-m",
+            args.model,
+            "--sandbox",
+            sandbox,
+            "--skip-git-repo-check",
+            prompt,
+        ]
+    elif not args.no_prompt:
+        cmd.append(prompt)
+
+    env = os.environ.copy()
+    if not args.no_proxy_tools:
+        bin_dir = ensure_tool_proxies(
+            args.task,
+            task_dir,
+            workspace,
+            app_dir,
+            config,
+            force_build=args.force_build,
+        )
+        env["PATH"] = f"{bin_dir}{os.pathsep}{env.get('PATH', '')}"
+        print(f"Docker tool proxies: {bin_dir}")
+    run(cmd, cwd=app_dir, check=False, env=env)
+
+
+def docker_run_base(
+    task_id: str,
+    task_dir: Path,
+    workspace: Path,
+    app_dir: Path,
+    config: dict,
+    *,
+    force_build: bool = False,
+) -> list[str]:
+    image = task_image(task_dir, config, task_id, force_build)
+    logs_dir = workspace / "logs"
+    for child in ("agent", "artifacts", "verifier"):
+        (logs_dir / child).mkdir(parents=True, exist_ok=True)
+
+    return [
+        "docker",
+        "run",
+        "--rm",
+        "-v",
+        f"{app_dir}:/app",
+        "-v",
+        f"{task_dir / 'tests'}:/tests:ro",
+        "-v",
+        f"{logs_dir / 'agent'}:/logs/agent",
+        "-v",
+        f"{logs_dir / 'artifacts'}:/logs/artifacts",
+        "-v",
+        f"{logs_dir / 'verifier'}:/logs/verifier",
+        "-w",
+        "/app",
+        image,
+    ]
+
+
+def cmd_shell(args: argparse.Namespace) -> None:
+    task_dir, workspace, app_dir, config = require_workspace(args.task)
+    cmd = docker_run_base(
+        args.task,
+        task_dir,
+        workspace,
+        app_dir,
+        config,
+        force_build=args.force_build,
+    )
+    run(cmd[:2] + ["-it"] + cmd[2:] + ["/bin/bash"], check=False)
+
+
+def clean_dir(path: Path) -> None:
+    if path.exists():
+        shutil.rmtree(path)
+    path.mkdir(parents=True, exist_ok=True)
+
+
+def cmd_verify(args: argparse.Namespace) -> None:
+    task_dir, workspace, app_dir, config = require_workspace(args.task)
+    verify_root = workspace / ".verify-run"
+    verify_app = verify_root / "app"
+
+    clean_dir(verify_root)
+    shutil.copytree(app_dir, verify_app, symlinks=True)
+
+    logs_dir = workspace / "logs"
+    for child in ("artifacts", "verifier"):
+        clean_dir(logs_dir / child)
+    (logs_dir / "agent").mkdir(parents=True, exist_ok=True)
+
+    cmd = docker_run_base(
+        args.task,
+        task_dir,
+        workspace,
+        verify_app,
+        config,
+        force_build=args.force_build,
+    )
+    result = run(cmd + ["bash", "/tests/test.sh"], check=False)
+
+    reward = logs_dir / "verifier" / "reward.txt"
+    if reward.exists():
+        print(f"\nReward: {reward.read_text(encoding='utf-8').strip()}")
+    else:
+        print("\nNo reward file written.")
+    print(f"Verifier log dir: {logs_dir / 'verifier'}")
+    print(f"Model patch:      {logs_dir / 'artifacts' / 'model.patch'}")
+    sys.exit(result.returncode)
+
+
+def cmd_diff(args: argparse.Namespace) -> None:
+    _, _, app_dir, config = require_workspace(args.task)
+    base = config.get("metadata", {}).get("base_commit_hash")
+    if not base:
+        raise TaskError("Task metadata has no base_commit_hash")
+    run(["git", "diff", "--binary", base], cwd=app_dir, check=False)
+
+
+def cmd_status(args: argparse.Namespace) -> None:
+    task_dir, workspace, app_dir, config = require_workspace(args.task)
+    image = config.get("environment", {}).get("docker_image", "local build")
+    print(f"Task:      {task_dir}")
+    print(f"Workspace: {workspace}")
+    print(f"App:       {app_dir}")
+    print(f"Image:     {image}")
+    run(["git", "status", "--short", "--branch"], cwd=app_dir, check=False)
+
+
+def cmd_proxy_tools(args: argparse.Namespace) -> None:
+    task_dir, workspace, app_dir, config = require_workspace(args.task)
+    bin_dir = ensure_tool_proxies(
+        args.task,
+        task_dir,
+        workspace,
+        app_dir,
+        config,
+        force_build=args.force_build,
+    )
+    print(f"Proxy tools ready: {bin_dir}")
+    print()
+    print("For a manual terminal session, run:")
+    print(f"export PATH={bin_dir}:$PATH")
+    print()
+    print("Then commands like `go env GOPATH` and `make test` run in Docker.")
+
+
+def cmd_ssh_code(args: argparse.Namespace) -> None:
+    _, _, app_dir, _ = require_workspace(args.task)
+    print(f"code --remote ssh-remote+{args.host} {app_dir}")
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        description="Create, edit, and verify local DeepSWE task workspaces."
+    )
+    sub = parser.add_subparsers(dest="command", required=True)
+
+    setup = sub.add_parser("setup", help="Create workspaces/<task>/app from image /app")
+    setup.add_argument("task")
+    setup.add_argument("--reset", action="store_true", help="Recreate an existing app tree")
+    setup.add_argument("--force-build", action="store_true", help="Build task image locally")
+    setup.set_defaults(func=cmd_setup)
+
+    code = sub.add_parser("code", help="Open the task app folder in VS Code")
+    code.add_argument("task")
+    code.set_defaults(func=cmd_code)
+
+    codex = sub.add_parser("codex", help="Launch Codex in the task app folder")
+    codex.add_argument("task")
+    codex.add_argument(
+        "--model",
+        default=os.environ.get("DEEPSWE_CODEX_MODEL", "gpt-5.5"),
+        help="Codex model to use (default: DEEPSWE_CODEX_MODEL or gpt-5.5)",
+    )
+    codex.add_argument(
+        "--sandbox",
+        default="workspace-write",
+        choices=["read-only", "workspace-write", "danger-full-access"],
+        help="Codex sandbox mode for editing",
+    )
+    codex.add_argument(
+        "--approval",
+        default="on-request",
+        choices=["untrusted", "on-failure", "on-request", "never"],
+        help="Interactive approval policy",
+    )
+    codex.add_argument(
+        "--exec",
+        action="store_true",
+        help="Run codex exec non-interactively with PROMPT.md",
+    )
+    codex.add_argument(
+        "--no-prompt",
+        action="store_true",
+        help="Start interactive Codex without sending PROMPT.md first",
+    )
+    codex.add_argument(
+        "--no-proxy-tools",
+        action="store_true",
+        help="Do not prepend Docker-backed go/make wrappers to PATH",
+    )
+    codex.add_argument(
+        "--allow-docker",
+        action="store_true",
+        help="Let Docker-backed tool wrappers run without Codex sandbox denial",
+    )
+    codex.add_argument("--force-build", action="store_true")
+    codex.set_defaults(func=cmd_codex)
+
+    shell = sub.add_parser("shell", help="Open an interactive shell in the task image")
+    shell.add_argument("task")
+    shell.add_argument("--force-build", action="store_true")
+    shell.set_defaults(func=cmd_shell)
+
+    verify = sub.add_parser("verify", help="Run the task verifier against a copy")
+    verify.add_argument("task")
+    verify.add_argument("--force-build", action="store_true")
+    verify.set_defaults(func=cmd_verify)
+
+    diff = sub.add_parser("diff", help="Print a binary git diff from the task base commit")
+    diff.add_argument("task")
+    diff.set_defaults(func=cmd_diff)
+
+    status = sub.add_parser("status", help="Show workspace paths and git status")
+    status.add_argument("task")
+    status.set_defaults(func=cmd_status)
+
+    proxy_tools = sub.add_parser(
+        "proxy-tools",
+        help="Create Docker-backed go/gofmt/goimports/make wrappers",
+    )
+    proxy_tools.add_argument("task")
+    proxy_tools.add_argument("--force-build", action="store_true")
+    proxy_tools.set_defaults(func=cmd_proxy_tools)
+
+    ssh_code = sub.add_parser("ssh-code", help="Print a VS Code Remote SSH command")
+    ssh_code.add_argument("task")
+    ssh_code.add_argument("host")
+    ssh_code.set_defaults(func=cmd_ssh_code)
+
+    return parser
+
+
+def main() -> None:
+    parser = build_parser()
+    args = parser.parse_args()
+    try:
+        args.func(args)
+    except TaskError as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        sys.exit(2)
+
+
+if __name__ == "__main__":
+    main()
