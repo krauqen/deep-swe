@@ -77,6 +77,17 @@ scripts/deepswe-task ssh-code prometheus-typed-label-sorting <host>
 
 ## Useful Commands
 
+```bash
+scripts/deepswe-task interactive <task>
+```
+
+Creates the workspace if needed, starts interactive Codex with the task prompt,
+writes the resulting binary-safe diff to
+`workspaces/<task>/logs/artifacts/model.patch`, and then runs the verifier
+against a disposable copy of the edited app. Use `--allow-docker` when Codex
+should be able to run Docker-backed project commands without approval prompts,
+or `--no-verify` when you only want the patch artifact.
+
 `scripts/deepswe-task codex <task>` starts interactive Codex with the task prompt
 and starts the persistent dev container. It prepends a `deepswe-exec` wrapper to
 `PATH`, and the prompt tells Codex to run project commands through that wrapper:
@@ -112,9 +123,8 @@ prints the `export PATH=...` command, paste that into your shell.
 scripts/deepswe-task proxy-tools <task>
 ```
 
-Creates the legacy per-command `go`, `gofmt`, `goimports`, and `make` wrappers.
-Each invocation uses a short-lived `docker run --rm` container instead of the
-persistent dev container.
+Creates the legacy per-command project tool wrappers. Each invocation uses a
+short-lived `docker run --rm` container instead of the persistent dev container.
 
 ```bash
 scripts/deepswe-task shell <task>

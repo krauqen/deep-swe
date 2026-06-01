@@ -20,7 +20,17 @@ except ModuleNotFoundError:  # pragma: no cover - Python < 3.11 fallback.
 ROOT = Path(__file__).resolve().parents[1]
 TASKS_DIR = ROOT / "tasks"
 WORKSPACES_DIR = ROOT / "workspaces"
-PROXY_TOOLS = ("go", "gofmt", "goimports", "make")
+PROXY_TOOLS = (
+    "go",
+    "gofmt",
+    "goimports",
+    "make",
+    "pip",
+    "pip3",
+    "pytest",
+    "python",
+    "python3",
+)
 DEV_EXEC = "deepswe-exec"
 
 
@@ -247,6 +257,12 @@ def ensure_tool_proxies(
     force_build: bool = False,
 ) -> Path:
     image = task_image(task_dir, config, task_id, force_build)
+    env_config = config.get("environment", {})
+    platform_args = (
+        '"--platform" "linux/amd64"'
+        if env_config.get("docker_image") and not force_build
+        else ""
+    )
     bin_dir = proxy_bin_dir(workspace)
     cache_dir = workspace / ".cache" / "docker-tools"
     bin_dir.mkdir(parents=True, exist_ok=True)
@@ -262,9 +278,14 @@ def ensure_tool_proxies(
         APP_DIR={app!r}
         CACHE_DIR={cache!r}
         IMAGE={image!r}
+        DOCKER_PLATFORM_ARGS=({platform_args})
         TOOL="$(basename "$0")"
+        DOCKER_RUN=(docker run --rm)
+        if ((${{#DOCKER_PLATFORM_ARGS[@]}})); then
+          DOCKER_RUN+=("${{DOCKER_PLATFORM_ARGS[@]}}")
+        fi
 
-        mkdir -p "$CACHE_DIR/go" "$CACHE_DIR/go-build" "$CACHE_DIR/home" "$CACHE_DIR/tmp"
+        mkdir -p "$CACHE_DIR/go" "$CACHE_DIR/go-build" "$CACHE_DIR/home" "$CACHE_DIR/pip" "$CACHE_DIR/tmp"
 
         case "$PWD" in
           "$APP_DIR"/*|"$APP_DIR")
@@ -275,12 +296,13 @@ def ensure_tool_proxies(
             ;;
         esac
 
-        exec docker run --rm --platform linux/amd64 \\
+        exec "${{DOCKER_RUN[@]}}" \\
           --user "$(id -u):$(id -g)" \\
           -e HOME="$CACHE_DIR/home" \\
           -e GOPATH="$CACHE_DIR/go" \\
           -e GOMODCACHE="$CACHE_DIR/go/pkg/mod" \\
           -e GOCACHE="$CACHE_DIR/go-build" \\
+          -e PIP_CACHE_DIR="$CACHE_DIR/pip" \\
           -e TMPDIR="$CACHE_DIR/tmp" \\
           -v "$APP_DIR:$APP_DIR" \\
           -v "$APP_DIR:/app" \\
@@ -623,9 +645,62 @@ def cmd_verify(args: argparse.Namespace) -> None:
         print(f"\nReward: {reward.read_text(encoding='utf-8').strip()}")
     else:
         print("\nNo reward file written.")
+    write_model_patch(workspace, app_dir, config)
     print(f"Verifier log dir: {logs_dir / 'verifier'}")
     print(f"Model patch:      {logs_dir / 'artifacts' / 'model.patch'}")
     sys.exit(result.returncode)
+
+
+def write_model_patch(workspace: Path, app_dir: Path, config: dict) -> Path:
+    base = config.get("metadata", {}).get("base_commit_hash")
+    if not base:
+        raise TaskError("Task metadata has no base_commit_hash")
+    artifacts_dir = workspace / "logs" / "artifacts"
+    artifacts_dir.mkdir(parents=True, exist_ok=True)
+    patch_path = artifacts_dir / "model.patch"
+    result = run(["git", "diff", "--binary", base], cwd=app_dir, capture=True)
+    patch_path.write_text(result.stdout, encoding="utf-8")
+    if result.stdout.strip():
+        print(f"Patch written:    {patch_path}")
+    else:
+        print(f"Patch written:    {patch_path} (empty)")
+    return patch_path
+
+
+def cmd_interactive(args: argparse.Namespace) -> None:
+    workspace = task_workspace(args.task)
+    app_dir = workspace / "app"
+    workspace_missing = not app_dir.exists() or not any(app_dir.iterdir())
+    if args.reset or workspace_missing:
+        setup_args = argparse.Namespace(
+            task=args.task,
+            reset=args.reset,
+            force_build=args.force_build,
+        )
+        cmd_setup(setup_args)
+
+    task_dir, workspace, app_dir, config = require_workspace(args.task)
+    codex_args = argparse.Namespace(
+        task=args.task,
+        model=args.model,
+        sandbox=args.sandbox,
+        approval=args.approval,
+        exec=False,
+        no_prompt=args.no_prompt,
+        no_proxy_tools=args.no_proxy_tools,
+        no_dev_container=args.no_dev_container,
+        allow_docker=args.allow_docker,
+        force_build=args.force_build,
+    )
+    cmd_codex(codex_args)
+
+    if args.no_verify:
+        write_model_patch(workspace, app_dir, config)
+        print("Verifier skipped.")
+        return
+
+    verify_args = argparse.Namespace(task=args.task, force_build=args.force_build)
+    cmd_verify(verify_args)
 
 
 def cmd_diff(args: argparse.Namespace) -> None:
@@ -663,7 +738,7 @@ def cmd_proxy_tools(args: argparse.Namespace) -> None:
     print("For a manual terminal session, run:")
     print(f"export PATH={bin_dir}:$PATH")
     print()
-    print("Then commands like `go env GOPATH` and `make test` run in Docker.")
+    print("Then commands like `go env GOPATH`, `make test`, and `pytest -q` run in Docker.")
 
 
 def cmd_dev_exec(args: argparse.Namespace) -> None:
@@ -781,6 +856,61 @@ def build_parser() -> argparse.ArgumentParser:
     codex.add_argument("--force-build", action="store_true")
     codex.set_defaults(func=cmd_codex)
 
+    interactive = sub.add_parser(
+        "interactive",
+        help="Setup if needed, run interactive Codex, write patch, then verify",
+    )
+    interactive.add_argument("task")
+    interactive.add_argument(
+        "--model",
+        default=os.environ.get("DEEPSWE_CODEX_MODEL", "gpt-5.5"),
+        help="Codex model to use (default: DEEPSWE_CODEX_MODEL or gpt-5.5)",
+    )
+    interactive.add_argument(
+        "--sandbox",
+        default="workspace-write",
+        choices=["read-only", "workspace-write", "danger-full-access"],
+        help="Codex sandbox mode for editing",
+    )
+    interactive.add_argument(
+        "--approval",
+        default="on-request",
+        choices=["untrusted", "on-failure", "on-request", "never"],
+        help="Interactive approval policy",
+    )
+    interactive.add_argument(
+        "--no-prompt",
+        action="store_true",
+        help="Start interactive Codex without sending PROMPT.md first",
+    )
+    interactive.add_argument(
+        "--no-proxy-tools",
+        action="store_true",
+        help="Do not prepend legacy Docker-backed tool wrappers to PATH",
+    )
+    interactive.add_argument(
+        "--no-dev-container",
+        action="store_true",
+        help="Use legacy per-tool docker run wrappers instead of the persistent dev container",
+    )
+    interactive.add_argument(
+        "--allow-docker",
+        action="store_true",
+        help="Let Docker-backed tool wrappers run without Codex sandbox denial",
+    )
+    interactive.add_argument(
+        "--no-verify",
+        action="store_true",
+        help="Write the patch but skip verifier execution",
+    )
+    interactive.add_argument(
+        "--reset",
+        action="store_true",
+        help="Recreate the workspace before starting Codex",
+    )
+    interactive.add_argument("--force-build", action="store_true")
+    interactive.set_defaults(func=cmd_interactive)
+
     shell = sub.add_parser("shell", help="Open an interactive shell in the task image")
     shell.add_argument("task")
     shell.add_argument("--force-build", action="store_true")
@@ -801,7 +931,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     proxy_tools = sub.add_parser(
         "proxy-tools",
-        help="Create legacy Docker-backed go/gofmt/goimports/make wrappers",
+        help="Create legacy Docker-backed project tool wrappers",
     )
     proxy_tools.add_argument("task")
     proxy_tools.add_argument("--force-build", action="store_true")
