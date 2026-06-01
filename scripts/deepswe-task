@@ -21,6 +21,7 @@ ROOT = Path(__file__).resolve().parents[1]
 TASKS_DIR = ROOT / "tasks"
 WORKSPACES_DIR = ROOT / "workspaces"
 PROXY_TOOLS = ("go", "gofmt", "goimports", "make")
+DEV_EXEC = "deepswe-exec"
 
 
 class TaskError(RuntimeError):
@@ -57,6 +58,25 @@ def load_task(task_id: str) -> tuple[Path, dict]:
 
 def task_workspace(task_id: str) -> Path:
     return WORKSPACES_DIR / task_id
+
+
+def dev_container_name(task_id: str) -> str:
+    safe = "".join(c if c.isalnum() or c in "_.-" else "-" for c in task_id)
+    return f"deepswe-{safe}-dev"
+
+
+def container_status(name: str) -> str | None:
+    try:
+        result = subprocess.run(
+            ["docker", "inspect", "-f", "{{.State.Status}}", name],
+            text=True,
+            capture_output=True,
+        )
+    except FileNotFoundError:
+        return None
+    if result.returncode != 0:
+        return None
+    return result.stdout.strip() or None
 
 
 def task_image(task_dir: Path, config: dict, task_id: str, force_build: bool) -> str:
@@ -203,6 +223,16 @@ def require_workspace(task_id: str) -> tuple[Path, Path, Path, dict]:
     return task_dir, workspace, app_dir, config
 
 
+def container_workdir(app_dir: Path) -> str:
+    try:
+        relative = Path.cwd().resolve().relative_to(app_dir.resolve())
+    except ValueError:
+        return "/app"
+    if relative == Path("."):
+        return "/app"
+    return f"/app/{relative.as_posix()}"
+
+
 def proxy_bin_dir(workspace: Path) -> Path:
     return workspace / ".bin"
 
@@ -234,7 +264,7 @@ def ensure_tool_proxies(
         IMAGE={image!r}
         TOOL="$(basename "$0")"
 
-        mkdir -p "$CACHE_DIR/go" "$CACHE_DIR/go-build" "$CACHE_DIR/tmp"
+        mkdir -p "$CACHE_DIR/go" "$CACHE_DIR/go-build" "$CACHE_DIR/home" "$CACHE_DIR/tmp"
 
         case "$PWD" in
           "$APP_DIR"/*|"$APP_DIR")
@@ -246,6 +276,8 @@ def ensure_tool_proxies(
         esac
 
         exec docker run --rm --platform linux/amd64 \\
+          --user "$(id -u):$(id -g)" \\
+          -e HOME="$CACHE_DIR/home" \\
           -e GOPATH="$CACHE_DIR/go" \\
           -e GOMODCACHE="$CACHE_DIR/go/pkg/mod" \\
           -e GOCACHE="$CACHE_DIR/go-build" \\
@@ -264,6 +296,26 @@ def ensure_tool_proxies(
     return bin_dir
 
 
+def ensure_dev_exec_wrapper(task_id: str, workspace: Path) -> Path:
+    bin_dir = proxy_bin_dir(workspace)
+    bin_dir.mkdir(parents=True, exist_ok=True)
+    helper = ROOT / "scripts" / "deepswe-task"
+    path = bin_dir / DEV_EXEC
+    path.write_text(
+        textwrap.dedent(
+            f"""\
+            #!/usr/bin/env bash
+            set -euo pipefail
+
+            exec {str(helper)!r} exec {task_id!r} -- "$@"
+            """
+        ),
+        encoding="utf-8",
+    )
+    path.chmod(0o755)
+    return bin_dir
+
+
 def cmd_code(args: argparse.Namespace) -> None:
     _, _, app_dir, _ = require_workspace(args.task)
     code = shutil.which("code")
@@ -271,6 +323,89 @@ def cmd_code(args: argparse.Namespace) -> None:
         print(f"VS Code CLI not found. Open this folder manually:\n{app_dir}")
         return
     run([code, str(app_dir)], check=False)
+
+
+def resolve_patch_path(patch_arg: str) -> Path:
+    path = Path(patch_arg).expanduser()
+    if not path.is_absolute():
+        path = (Path.cwd() / path).resolve()
+    if path.is_dir():
+        path = path / "artifacts" / "model.patch"
+    if not path.exists():
+        raise TaskError(f"Patch not found: {path}")
+    if not path.is_file():
+        raise TaskError(f"Patch path is not a file: {path}")
+    return path
+
+
+def cmd_apply_patch(args: argparse.Namespace) -> None:
+    _, _, app_dir, _ = require_workspace(args.task)
+    patch = resolve_patch_path(args.patch)
+
+    check_cmd = ["git", "apply", "--check"]
+    apply_cmd = ["git", "apply"]
+    if args.threeway:
+        check_cmd.append("--3way")
+        apply_cmd.append("--3way")
+    check_cmd.append(str(patch))
+    apply_cmd.append(str(patch))
+
+    run(check_cmd, cwd=app_dir)
+    run(apply_cmd, cwd=app_dir)
+    print()
+    print(f"Applied patch: {patch}")
+    print(f"Workspace:     {app_dir}")
+
+
+def cmd_up(args: argparse.Namespace) -> None:
+    task_dir, workspace, app_dir, config = require_workspace(args.task)
+    name = ensure_dev_container(
+        args.task,
+        task_dir,
+        workspace,
+        app_dir,
+        config,
+        force_build=args.force_build,
+        recreate=args.recreate,
+    )
+    ensure_dev_exec_wrapper(args.task, workspace)
+    print(f"Dev container running: {name}")
+    print(f"Workspace mounted:     {app_dir} -> /app")
+    print(f"Run commands with:     scripts/deepswe-task exec {args.task} -- <command>")
+
+
+def cmd_exec(args: argparse.Namespace) -> None:
+    task_dir, workspace, app_dir, config = require_workspace(args.task)
+    command = list(args.command)
+    if command and command[0] == "--":
+        command = command[1:]
+    if not command:
+        raise TaskError(
+            "Missing command. Example: scripts/deepswe-task exec <task> -- go test ./..."
+        )
+    name = ensure_dev_container(
+        args.task,
+        task_dir,
+        workspace,
+        app_dir,
+        config,
+        force_build=args.force_build,
+    )
+    result = run(
+        ["docker", "exec", "-w", container_workdir(app_dir), name, *command],
+        check=False,
+    )
+    sys.exit(result.returncode)
+
+
+def cmd_down(args: argparse.Namespace) -> None:
+    name = dev_container_name(args.task)
+    status = container_status(name)
+    if status is None:
+        print(f"No dev container found: {name}")
+        return
+    run(["docker", "rm", "-f", name], check=False)
+    print(f"Removed dev container: {name}")
 
 
 def cmd_codex(args: argparse.Namespace) -> None:
@@ -285,6 +420,27 @@ def cmd_codex(args: argparse.Namespace) -> None:
     if args.allow_docker:
         print("Docker access: enabled via Codex danger-full-access sandbox")
     prompt = (workspace / "PROMPT.md").read_text(encoding="utf-8")
+    if not args.no_dev_container:
+        name = ensure_dev_container(
+            args.task,
+            task_dir,
+            workspace,
+            app_dir,
+            config,
+            force_build=args.force_build,
+        )
+        print(f"Dev container: {name}")
+        prompt = textwrap.dedent(
+            f"""\
+            Local workflow note:
+            - You are running on the host so Codex auth stays outside Docker.
+            - Edit files directly in this workspace.
+            - Run project commands inside the task container with `{DEV_EXEC} <command>`.
+            - Examples: `{DEV_EXEC} go test ./...`, `{DEV_EXEC} make test`, `{DEV_EXEC} bash -lc 'pytest -q'`.
+            - Do not run project build/test commands directly on the host unless explicitly asked.
+
+            """
+        ) + prompt
     cmd = [
         codex,
         "-m",
@@ -309,7 +465,7 @@ def cmd_codex(args: argparse.Namespace) -> None:
         cmd.append(prompt)
 
     env = os.environ.copy()
-    if not args.no_proxy_tools:
+    if args.no_dev_container and not args.no_proxy_tools:
         bin_dir = ensure_tool_proxies(
             args.task,
             task_dir,
@@ -320,6 +476,10 @@ def cmd_codex(args: argparse.Namespace) -> None:
         )
         env["PATH"] = f"{bin_dir}{os.pathsep}{env.get('PATH', '')}"
         print(f"Docker tool proxies: {bin_dir}")
+    elif not args.no_dev_container:
+        bin_dir = ensure_dev_exec_wrapper(args.task, workspace)
+        env["PATH"] = f"{bin_dir}{os.pathsep}{env.get('PATH', '')}"
+        print(f"Docker exec wrapper: {bin_dir / DEV_EXEC}")
     run(cmd, cwd=app_dir, check=False, env=env)
 
 
@@ -341,6 +501,18 @@ def docker_run_base(
         "docker",
         "run",
         "--rm",
+        "--user",
+        f"{os.getuid()}:{os.getgid()}",
+        "-e",
+        "HOME=/tmp",
+        "-e",
+        "GOPATH=/tmp/deepswe-go",
+        "-e",
+        "GOMODCACHE=/tmp/deepswe-go/pkg/mod",
+        "-e",
+        "GOCACHE=/tmp/deepswe-go-build",
+        "-e",
+        "TMPDIR=/tmp",
         "-v",
         f"{app_dir}:/app",
         "-v",
@@ -355,6 +527,53 @@ def docker_run_base(
         "/app",
         image,
     ]
+
+
+def ensure_dev_container(
+    task_id: str,
+    task_dir: Path,
+    workspace: Path,
+    app_dir: Path,
+    config: dict,
+    *,
+    force_build: bool = False,
+    recreate: bool = False,
+) -> str:
+    name = dev_container_name(task_id)
+    status = container_status(name)
+
+    if status and recreate:
+        run(["docker", "rm", "-f", name], check=False)
+        status = None
+
+    if status == "running":
+        return name
+    if status:
+        run(["docker", "start", name])
+        return name
+
+    base = docker_run_base(
+        task_id,
+        task_dir,
+        workspace,
+        app_dir,
+        config,
+        force_build=force_build,
+    )
+    image = base[-1]
+    create_cmd = [
+        "docker",
+        "create",
+        "--name",
+        name,
+        *base[3:-1],
+        image,
+        "sleep",
+        "infinity",
+    ]
+    run(create_cmd)
+    run(["docker", "start", name])
+    return name
 
 
 def cmd_shell(args: argparse.Namespace) -> None:
@@ -420,10 +639,12 @@ def cmd_diff(args: argparse.Namespace) -> None:
 def cmd_status(args: argparse.Namespace) -> None:
     task_dir, workspace, app_dir, config = require_workspace(args.task)
     image = config.get("environment", {}).get("docker_image", "local build")
-    print(f"Task:      {task_dir}")
-    print(f"Workspace: {workspace}")
-    print(f"App:       {app_dir}")
-    print(f"Image:     {image}")
+    name = dev_container_name(args.task)
+    print(f"Task:          {task_dir}")
+    print(f"Workspace:     {workspace}")
+    print(f"App:           {app_dir}")
+    print(f"Image:         {image}")
+    print(f"Dev container: {name} ({container_status(name) or 'missing'})")
     run(["git", "status", "--short", "--branch"], cwd=app_dir, check=False)
 
 
@@ -443,6 +664,17 @@ def cmd_proxy_tools(args: argparse.Namespace) -> None:
     print(f"export PATH={bin_dir}:$PATH")
     print()
     print("Then commands like `go env GOPATH` and `make test` run in Docker.")
+
+
+def cmd_dev_exec(args: argparse.Namespace) -> None:
+    _, workspace, _, _ = require_workspace(args.task)
+    bin_dir = ensure_dev_exec_wrapper(args.task, workspace)
+    print(f"Dev exec wrapper ready: {bin_dir / DEV_EXEC}")
+    print()
+    print("For a manual terminal session, run:")
+    print(f"export PATH={bin_dir}:$PATH")
+    print()
+    print(f"Then commands like `{DEV_EXEC} go test ./...` run in the persistent task container.")
 
 
 def cmd_ssh_code(args: argparse.Namespace) -> None:
@@ -465,6 +697,42 @@ def build_parser() -> argparse.ArgumentParser:
     code = sub.add_parser("code", help="Open the task app folder in VS Code")
     code.add_argument("task")
     code.set_defaults(func=cmd_code)
+
+    apply_patch = sub.add_parser(
+        "apply-patch",
+        help="Apply a model.patch file or trial directory to the task workspace",
+    )
+    apply_patch.add_argument("task")
+    apply_patch.add_argument(
+        "patch",
+        help="Path to model.patch, or a trial directory containing artifacts/model.patch",
+    )
+    apply_patch.add_argument(
+        "--3way",
+        dest="threeway",
+        action="store_true",
+        help="Use git apply --3way when checking and applying",
+    )
+    apply_patch.set_defaults(func=cmd_apply_patch)
+
+    up = sub.add_parser("up", help="Start the persistent task dev container")
+    up.add_argument("task")
+    up.add_argument("--force-build", action="store_true")
+    up.add_argument("--recreate", action="store_true", help="Replace an existing dev container")
+    up.set_defaults(func=cmd_up)
+
+    exec_parser = sub.add_parser(
+        "exec",
+        help="Run a command in the persistent task dev container",
+    )
+    exec_parser.add_argument("task")
+    exec_parser.add_argument("--force-build", action="store_true")
+    exec_parser.add_argument("command", nargs=argparse.REMAINDER)
+    exec_parser.set_defaults(func=cmd_exec)
+
+    down = sub.add_parser("down", help="Stop and remove the persistent task dev container")
+    down.add_argument("task")
+    down.set_defaults(func=cmd_down)
 
     codex = sub.add_parser("codex", help="Launch Codex in the task app folder")
     codex.add_argument("task")
@@ -498,7 +766,12 @@ def build_parser() -> argparse.ArgumentParser:
     codex.add_argument(
         "--no-proxy-tools",
         action="store_true",
-        help="Do not prepend Docker-backed go/make wrappers to PATH",
+        help="Do not prepend legacy Docker-backed go/make wrappers to PATH",
+    )
+    codex.add_argument(
+        "--no-dev-container",
+        action="store_true",
+        help="Use legacy per-tool docker run wrappers instead of the persistent dev container",
     )
     codex.add_argument(
         "--allow-docker",
@@ -528,11 +801,18 @@ def build_parser() -> argparse.ArgumentParser:
 
     proxy_tools = sub.add_parser(
         "proxy-tools",
-        help="Create Docker-backed go/gofmt/goimports/make wrappers",
+        help="Create legacy Docker-backed go/gofmt/goimports/make wrappers",
     )
     proxy_tools.add_argument("task")
     proxy_tools.add_argument("--force-build", action="store_true")
     proxy_tools.set_defaults(func=cmd_proxy_tools)
+
+    dev_exec = sub.add_parser(
+        "dev-exec",
+        help=f"Create the {DEV_EXEC} wrapper for the persistent task dev container",
+    )
+    dev_exec.add_argument("task")
+    dev_exec.set_defaults(func=cmd_dev_exec)
 
     ssh_code = sub.add_parser("ssh-code", help="Print a VS Code Remote SSH command")
     ssh_code.add_argument("task")
